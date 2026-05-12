@@ -63,7 +63,17 @@
         <!-- Processing state (SalesRep only) -->
         <div class="card processing-card" v-if="!isAdmin && report.status === 'Transcribing'">
           <i class="pi pi-spin pi-spinner" />
-          <p>{{ t('reportDetail.transcribing') }}</p>
+          <p class="processing-title">{{ t('reportDetail.processingTitle') }}</p>
+          <p class="processing-hint">{{ t('reportDetail.processingHint') }}</p>
+          <!-- Mobile: manual check button -->
+          <Button
+            v-if="isMobile"
+            :label="checkingStatus ? t('reportDetail.checkingStatus') : t('reportDetail.checkStatus')"
+            :loading="checkingStatus"
+            icon="pi pi-refresh"
+            class="check-btn"
+            @click="checkStatusOnce"
+          />
         </div>
 
         <!-- Error state (SalesRep only) -->
@@ -205,12 +215,29 @@ const savingSummary = ref(false)
 const editingSummary = ref(false)
 const summaryDraft = ref('')
 const extracting = ref(false)
+const checkingStatus = ref(false)
 const audioFile = ref(null)
 const fileInput = ref(null)
 const lines = ref([])
 const products = ref([])
 
+const isMobile = window.innerWidth < 1024 || /Mobi|Android|iPad|iPhone/i.test(navigator.userAgent)
+
 let pollTimer = null
+
+function applyUpdated(updated) {
+  report.value = { ...report.value, ...updated }
+  lines.value = (updated.orderLines ?? []).map(l => ({
+    productNameRaw: l.productNameRaw,
+    quantity: l.quantity,
+    unit: l.unit,
+    productId: l.productId,
+    notes: l.notes
+  }))
+  if (updated.status === 'Summarized') {
+    router.push(`/reports/${route.params.id}`)
+  }
+}
 
 function startPolling() {
   stopPolling()
@@ -220,17 +247,7 @@ function startPolling() {
       const updated = data.data
       if (updated.status !== 'Transcribing') {
         stopPolling()
-        report.value = { ...report.value, ...updated }
-        lines.value = (updated.orderLines ?? []).map(l => ({
-          productNameRaw: l.productNameRaw,
-          quantity: l.quantity,
-          unit: l.unit,
-          productId: l.productId,
-          notes: l.notes
-        }))
-        if (updated.status === 'Summarized') {
-          router.push(`/reports/${route.params.id}`)
-        }
+        applyUpdated(updated)
       }
     } catch { stopPolling() }
   }, 5000)
@@ -238,6 +255,23 @@ function startPolling() {
 
 function stopPolling() {
   if (pollTimer) { clearInterval(pollTimer); pollTimer = null }
+}
+
+async function checkStatusOnce() {
+  checkingStatus.value = true
+  try {
+    const { data } = await api.get(`/reports/${route.params.id}`)
+    const updated = data.data
+    if (updated.status === 'Transcribing' || updated.status === 'Uploaded') {
+      toast.add({ severity: 'info', summary: t('reportDetail.stillProcessing'), life: 4000 })
+    } else {
+      applyUpdated(updated)
+    }
+  } catch {
+    toast.add({ severity: 'error', summary: t('reportDetail.loadFailed'), life: 3000 })
+  } finally {
+    checkingStatus.value = false
+  }
 }
 
 const STATUS_SEVERITY = { Uploaded: 'secondary', Transcribing: 'info', Summarized: 'success', Error: 'danger' }
@@ -262,7 +296,7 @@ async function load() {
       productId: l.productId,
       notes: l.notes
     }))
-    if (data.data.status === 'Transcribing') startPolling()
+    if (data.data.status === 'Transcribing' && !isMobile) startPolling()
   } catch (e) {
     error.value = e.response?.status === 404 ? t('reportDetail.notFound') : t('reportDetail.loadFailed')
   } finally {
@@ -517,15 +551,33 @@ onUnmounted(stopPolling)
 .processing-card {
   text-align: center;
   color: #339af0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
-.processing-card .pi {
+.processing-card > .pi {
   font-size: 32px;
-  display: block;
-  margin-bottom: 12px;
 }
 
-.processing-card p { margin: 0; font-size: 14px; }
+.processing-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1c7ed6;
+}
+
+.processing-hint {
+  margin: 0;
+  font-size: 13px;
+  color: #74c0fc;
+}
+
+.check-btn {
+  margin-top: 8px;
+  width: 100%;
+}
 
 .error-card {
   text-align: center;

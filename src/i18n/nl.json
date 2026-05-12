@@ -230,7 +230,12 @@
                          "savedSuccess":  "Opgeslagen",
                          "saveFailed":  "Opslaan mislukt",
                          "editSummary":  "Samenvatting bewerken",
-                         "saveSummary":  "Samenvatting opslaan"
+                         "saveSummary":  "Samenvatting opslaan",
+                         "processingTitle":  "Opname wordt verwerkt",
+                         "processingHint":  "Dit duurt ongeveer 30-60 seconden.",
+                         "checkStatus":  "Verwerking controleren",
+                         "checkingStatus":  "Controleren...",
+                         "stillProcessing":  "Nog bezig, probeer opnieuw over 30 seconden."
                      },
     "products":  {
                      "title":  "Producten",

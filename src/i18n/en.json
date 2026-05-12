@@ -230,7 +230,12 @@
                          "savedSuccess":  "Saved",
                          "saveFailed":  "Save failed",
                          "editSummary":  "Edit summary",
-                         "saveSummary":  "Save summary"
+                         "saveSummary":  "Save summary",
+                         "processingTitle":  "Processing recording",
+                         "processingHint":  "This takes approximately 30-60 seconds.",
+                         "checkStatus":  "Check status",
+                         "checkingStatus":  "Checking...",
+                         "stillProcessing":  "Still processing, try again in 30 seconds."
                      },
     "products":  {
                      "title":  "Products",

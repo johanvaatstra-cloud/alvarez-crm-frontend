@@ -230,7 +230,12 @@
                          "savedSuccess":  "Desat",
                          "saveFailed":  "Error en desar",
                          "editSummary":  "Edita el resum",
-                         "saveSummary":  "Desa el resum"
+                         "saveSummary":  "Desa el resum",
+                         "processingTitle":  "Processant l'enregistrament",
+                         "processingHint":  "Això tarda aproximadament 30-60 segons.",
+                         "checkStatus":  "Comprovar estat",
+                         "checkingStatus":  "Comprovant...",
+                         "stillProcessing":  "Encara processant, torna-ho a provar d'aquí a 30 segons."
                      },
     "products":  {
                      "title":  "Productes",

@@ -230,7 +230,12 @@
                          "savedSuccess":  "Guardado",
                          "saveFailed":  "Error al guardar",
                          "editSummary":  "Editar resumen",
-                         "saveSummary":  "Guardar resumen"
+                         "saveSummary":  "Guardar resumen",
+                         "processingTitle":  "Procesando grabación",
+                         "processingHint":  "Esto tarda aproximadamente 30-60 segundos.",
+                         "checkStatus":  "Comprobar estado",
+                         "checkingStatus":  "Comprobando...",
+                         "stillProcessing":  "Todavía procesando, inténtalo de nuevo en 30 segundos."
                      },
     "products":  {
                      "title":  "Productos",
