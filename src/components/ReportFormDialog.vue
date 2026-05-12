@@ -96,6 +96,15 @@
           />
         </div>
 
+        <!-- Recording error detail -->
+        <div v-if="recordingError" class="recording-error">
+          <i class="pi pi-exclamation-triangle" />
+          <div class="recording-error-text">
+            <strong>{{ recordingError.name }}</strong>
+            <span>{{ recordingError.message }}</span>
+          </div>
+        </div>
+
         <small class="hint">{{ t('reportForm.audioHint') }}</small>
       </div>
     </div>
@@ -154,6 +163,7 @@ const fileInput = ref(null)
 // In-browser recording
 const recording = ref(false)
 const recordingSeconds = ref(0)
+const recordingError = ref(null)
 let mediaRecorder = null
 let recordedChunks = []
 let recordingTimer = null
@@ -225,16 +235,43 @@ function mimeToExt(mime) {
 }
 
 async function startRecording() {
+  recordingError.value = null
+
   const mimeType = detectMimeType()
   if (!mimeType) {
+    recordingError.value = { name: 'NotSupportedError', message: t('reportForm.noFormatSupported') }
     toast.add({ severity: 'error', summary: t('reportForm.micUnavailable'), detail: t('reportForm.noFormatSupported'), life: 5000 })
     return
   }
+
+  let stream
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+  } catch (err) {
+    const name = err?.name ?? 'Error'
+    const message = err?.message ?? String(err)
+    recordingError.value = { name, message }
+    toast.add({ severity: 'error', summary: t('reportForm.micUnavailable'), detail: `${name}: ${message}`, life: 6000 })
+    return
+  }
+
+  try {
     recordedChunks = []
     mediaRecorder = new MediaRecorder(stream, { mimeType })
+
+    mediaRecorder.onerror = (event) => {
+      const err = event.error ?? event
+      const name = err?.name ?? 'MediaRecorderError'
+      const message = err?.message ?? String(err)
+      recordingError.value = { name, message }
+      toast.add({ severity: 'error', summary: t('reportForm.micUnavailable'), detail: `${name}: ${message}`, life: 6000 })
+      recording.value = false
+      clearInterval(recordingTimer)
+      stream.getTracks().forEach(t => t.stop())
+    }
+
     mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data) }
+
     mediaRecorder.onstop = () => {
       stream.getTracks().forEach(t => t.stop())
       const ext = mimeToExt(mimeType)
@@ -242,12 +279,17 @@ async function startRecording() {
       const file = new File([blob], `opname-${Date.now()}.${ext}`, { type: mimeType })
       setAudioFile(file)
     }
+
     mediaRecorder.start()
     recording.value = true
     recordingSeconds.value = 0
     recordingTimer = setInterval(() => recordingSeconds.value++, 1000)
-  } catch {
-    toast.add({ severity: 'error', summary: t('reportForm.micUnavailable'), detail: t('reportForm.micPermission'), life: 4000 })
+  } catch (err) {
+    const name = err?.name ?? 'Error'
+    const message = err?.message ?? String(err)
+    recordingError.value = { name, message }
+    toast.add({ severity: 'error', summary: t('reportForm.micUnavailable'), detail: `${name}: ${message}`, life: 6000 })
+    stream.getTracks().forEach(t => t.stop())
   }
 }
 
@@ -263,6 +305,7 @@ function reset() {
   form.clientId = props.fixedClientId ?? null
   form.visitDate = props.prefillDate ? new Date(props.prefillDate) : new Date()
   form.plannedVisitId = props.prefillVisitId ?? null
+  recordingError.value = null
   clearAudio()
   stopRecording()
 }
@@ -377,5 +420,41 @@ onMounted(async () => {
 .hint {
   font-size: 11px;
   color: #adb5bd;
+}
+
+.recording-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #fff5f5;
+  border: 1px solid #ffc9c9;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 4px;
+}
+
+.recording-error > .pi {
+  color: #e03131;
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.recording-error-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.recording-error-text strong {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c92a2a;
+}
+
+.recording-error-text span {
+  font-size: 11px;
+  color: #e03131;
+  word-break: break-word;
 }
 </style>
