@@ -173,7 +173,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
 import { useI18n } from 'vue-i18n'
@@ -210,6 +210,36 @@ const fileInput = ref(null)
 const lines = ref([])
 const products = ref([])
 
+let pollTimer = null
+
+function startPolling() {
+  stopPolling()
+  pollTimer = setInterval(async () => {
+    try {
+      const { data } = await api.get(`/reports/${route.params.id}`)
+      const updated = data.data
+      if (updated.status !== 'Transcribing') {
+        stopPolling()
+        report.value = { ...report.value, ...updated }
+        lines.value = (updated.orderLines ?? []).map(l => ({
+          productNameRaw: l.productNameRaw,
+          quantity: l.quantity,
+          unit: l.unit,
+          productId: l.productId,
+          notes: l.notes
+        }))
+        if (updated.status === 'Summarized') {
+          router.push(`/reports/${route.params.id}`)
+        }
+      }
+    } catch { stopPolling() }
+  }, 5000)
+}
+
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null }
+}
+
 const STATUS_SEVERITY = { Uploaded: 'secondary', Transcribing: 'info', Summarized: 'success', Error: 'danger' }
 
 function statusLabel(s) {
@@ -232,6 +262,7 @@ async function load() {
       productId: l.productId,
       notes: l.notes
     }))
+    if (data.data.status === 'Transcribing') startPolling()
   } catch (e) {
     error.value = e.response?.status === 404 ? t('reportDetail.notFound') : t('reportDetail.loadFailed')
   } finally {
@@ -325,7 +356,7 @@ function cancelEditSummary() {
 async function saveSummary() {
   savingSummary.value = true
   try {
-    await api.patch(`/reports/${route.params.id}`, { aiSummary: summaryDraft.value })
+    await api.put(`/reports/${route.params.id}/summary`, { aiSummary: summaryDraft.value })
     report.value.aiSummary = summaryDraft.value
     editingSummary.value = false
     toast.add({ severity: 'success', summary: t('reportDetail.savedSuccess'), life: 3000 })
@@ -337,6 +368,7 @@ async function saveSummary() {
 }
 
 onMounted(() => { load(); loadProducts() })
+onUnmounted(stopPolling)
 </script>
 
 <style scoped>
