@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alvarez CRM — Geen verbinding</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f4f6f4;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 48px 40px;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      max-width: 400px;
+      width: 90%;
+    }
+    .icon {
+      width: 64px;
+      height: 64px;
+      background: #e8f5ee;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 28px;
+    }
+    h1 { font-size: 20px; font-weight: 700; color: #1b4332; margin-bottom: 8px; }
+    p { font-size: 14px; color: #6c757d; line-height: 1.6; margin-bottom: 28px; }
+    button {
+      background: #1b4332;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:hover { background: #2d6a4f; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">📡</div>
+    <h1>Geen internetverbinding</h1>
+    <p>Controleer uw verbinding en probeer het opnieuw. Eerder geladen pagina's zijn mogelijk nog beschikbaar.</p>
+    <button onclick="window.location.reload()">Opnieuw proberen</button>
+  </div>
+</body>
+</html>
