@@ -199,6 +199,7 @@
                        "create":  "Create",
                        "micUnavailable":  "Microphone unavailable",
                        "micPermission":  "Please grant microphone permission and try again.",
+                       "noFormatSupported":  "This device does not support any audio recording format.",
                        "audioUploaded":  "Audio uploaded",
                        "transcriptionStarted":  "Transcription started...",
                        "created":  "Report created",

@@ -213,16 +213,33 @@ function clearAudio() {
   if (fileInput.value) fileInput.value.value = ''
 }
 
+function detectMimeType() {
+  const candidates = ['audio/webm', 'audio/mp4', 'audio/ogg']
+  return candidates.find(t => MediaRecorder.isTypeSupported(t)) ?? ''
+}
+
+function mimeToExt(mime) {
+  if (mime.includes('mp4')) return 'mp4'
+  if (mime.includes('ogg')) return 'ogg'
+  return 'webm'
+}
+
 async function startRecording() {
+  const mimeType = detectMimeType()
+  if (!mimeType) {
+    toast.add({ severity: 'error', summary: t('reportForm.micUnavailable'), detail: t('reportForm.noFormatSupported'), life: 5000 })
+    return
+  }
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
     recordedChunks = []
-    mediaRecorder = new MediaRecorder(stream)
+    mediaRecorder = new MediaRecorder(stream, { mimeType })
     mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data) }
     mediaRecorder.onstop = () => {
       stream.getTracks().forEach(t => t.stop())
-      const blob = new Blob(recordedChunks, { type: 'audio/webm' })
-      const file = new File([blob], `opname-${Date.now()}.webm`, { type: 'audio/webm' })
+      const ext = mimeToExt(mimeType)
+      const blob = new Blob(recordedChunks, { type: mimeType })
+      const file = new File([blob], `opname-${Date.now()}.${ext}`, { type: mimeType })
       setAudioFile(file)
     }
     mediaRecorder.start()

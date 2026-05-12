@@ -199,6 +199,7 @@
                        "create":  "Crea",
                        "micUnavailable":  "Micròfon no disponible",
                        "micPermission":  "Concedeix permís al micròfon i torna-ho a provar.",
+                       "noFormatSupported":  "Aquest dispositiu no admet cap format d'enregistrament d'àudio.",
                        "audioUploaded":  "Àudio pujat",
                        "transcriptionStarted":  "Transcripció iniciada...",
                        "created":  "Informe creat",

@@ -199,6 +199,7 @@
                        "create":  "Crear",
                        "micUnavailable":  "Micrófono no disponible",
                        "micPermission":  "Concede permiso al micrófono e inténtalo de nuevo.",
+                       "noFormatSupported":  "Este dispositivo no admite ningún formato de grabación de audio.",
                        "audioUploaded":  "Audio subido",
                        "transcriptionStarted":  "Transcripción iniciada...",
                        "created":  "Informe creado",

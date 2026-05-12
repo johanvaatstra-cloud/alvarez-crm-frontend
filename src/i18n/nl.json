@@ -199,6 +199,7 @@
                        "create":  "Aanmaken",
                        "micUnavailable":  "Microfoon niet beschikbaar",
                        "micPermission":  "Geef toestemming voor de microfoon en probeer opnieuw.",
+                       "noFormatSupported":  "Dit apparaat ondersteunt geen enkel audio-opnameformaat.",
                        "audioUploaded":  "Audio geüpload",
                        "transcriptionStarted":  "Transcriptie gestart...",
                        "created":  "Rapport aangemaakt",
