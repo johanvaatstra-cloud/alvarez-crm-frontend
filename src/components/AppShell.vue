@@ -19,73 +19,77 @@
         </div>
       </div>
 
-      <div class="nav-section">
-        <RouterLink to="/dashboard" class="nav-item" active-class="nav-item--active">
-          <i class="pi pi-home" />
-          <span>{{ t('nav.dashboard') }}</span>
-        </RouterLink>
-        <RouterLink to="/clients" class="nav-item" active-class="nav-item--active">
-          <i class="pi pi-building" />
-          <span>{{ t('nav.clients') }}</span>
-        </RouterLink>
-        <RouterLink to="/agenda" class="nav-item" active-class="nav-item--active">
-          <i class="pi pi-calendar" />
-          <span>{{ t('nav.agenda') }}</span>
-        </RouterLink>
-        <RouterLink to="/reports" class="nav-item" active-class="nav-item--active">
-          <i class="pi pi-file-edit" />
-          <span>{{ t('nav.reports') }}</span>
-        </RouterLink>
-        <RouterLink to="/reports/missing" class="nav-item" active-class="nav-item--active">
-          <i class="pi pi-exclamation-triangle" />
-          <span>{{ t('nav.missingReports') }}</span>
-        </RouterLink>
-        <RouterLink to="/orders" class="nav-item" active-class="nav-item--active">
-          <i class="pi pi-shopping-cart" />
-          <span>{{ t('nav.orders') }}</span>
-        </RouterLink>
-      </div>
-
-      <div v-if="auth.isAdmin" class="nav-section">
-        <p class="nav-label">{{ t('nav.admin') }}</p>
-        <RouterLink to="/admin/users" class="nav-item" active-class="nav-item--active">
-          <i class="pi pi-users" />
-          <span>{{ t('nav.employees') }}</span>
-        </RouterLink>
-        <RouterLink to="/admin/products" class="nav-item" active-class="nav-item--active">
-          <i class="pi pi-box" />
-          <span>{{ t('nav.products') }}</span>
-        </RouterLink>
-        <RouterLink to="/admin/promotions" class="nav-item" active-class="nav-item--active">
-          <i class="pi pi-tag" />
-          <span>{{ t('nav.promotions') }}</span>
-        </RouterLink>
-        <RouterLink to="/admin/settings" class="nav-item" active-class="nav-item--active">
-          <i class="pi pi-cog" />
-          <span>{{ t('nav.settings') }}</span>
-        </RouterLink>
-      </div>
-
-      <div class="sidebar-spacer" />
-
-      <div class="sidebar-footer">
-        <div class="user-info">
-          <div class="user-avatar">{{ initials }}</div>
-          <div class="user-details">
-            <span class="user-name">{{ auth.fullName }}</span>
-            <span class="user-role">{{ auth.isAdmin ? t('nav.adminRole') : t('nav.salesRepRole') }}</span>
-          </div>
+      <!-- Scrollable nav area -->
+      <div class="nav-items">
+        <div class="nav-section">
+          <RouterLink to="/dashboard" class="nav-item" active-class="nav-item--active">
+            <i class="pi pi-home" />
+            <span>{{ t('nav.dashboard') }}</span>
+          </RouterLink>
+          <RouterLink to="/clients" class="nav-item" active-class="nav-item--active">
+            <i class="pi pi-building" />
+            <span>{{ t('nav.clients') }}</span>
+          </RouterLink>
+          <RouterLink to="/agenda" class="nav-item" active-class="nav-item--active">
+            <i class="pi pi-calendar" />
+            <span>{{ t('nav.agenda') }}</span>
+          </RouterLink>
+          <RouterLink to="/reports" class="nav-item" active-class="nav-item--active">
+            <i class="pi pi-file-edit" />
+            <span>{{ t('nav.reports') }}</span>
+          </RouterLink>
+          <RouterLink to="/reports/missing" class="nav-item" active-class="nav-item--active">
+            <i class="pi pi-exclamation-triangle" />
+            <span>{{ t('nav.missingReports') }}</span>
+          </RouterLink>
+          <RouterLink to="/orders" class="nav-item" active-class="nav-item--active">
+            <i class="pi pi-shopping-cart" />
+            <span>{{ t('nav.orders') }}</span>
+          </RouterLink>
         </div>
-        <button
-          class="sidebar-icon-btn"
-          @click="toggleTheme"
-          :title="isDark ? t('nav.lightMode') : t('nav.darkMode')"
-        >
-          <i :class="isDark ? 'pi pi-sun' : 'pi pi-moon'" />
-        </button>
-        <button class="logout-btn" @click="handleLogout" :title="t('nav.logout')">
-          <i class="pi pi-sign-out" />
-        </button>
+
+        <div v-if="auth.isAdmin" class="nav-section">
+          <p class="nav-label">{{ t('nav.admin') }}</p>
+          <RouterLink to="/admin/users" class="nav-item" active-class="nav-item--active">
+            <i class="pi pi-users" />
+            <span>{{ t('nav.employees') }}</span>
+          </RouterLink>
+          <RouterLink to="/admin/products" class="nav-item" active-class="nav-item--active">
+            <i class="pi pi-box" />
+            <span>{{ t('nav.products') }}</span>
+          </RouterLink>
+          <RouterLink to="/admin/promotions" class="nav-item" active-class="nav-item--active">
+            <i class="pi pi-tag" />
+            <span>{{ t('nav.promotions') }}</span>
+          </RouterLink>
+          <RouterLink to="/admin/settings" class="nav-item" active-class="nav-item--active">
+            <i class="pi pi-cog" />
+            <span>{{ t('nav.settings') }}</span>
+          </RouterLink>
+        </div>
+      </div>
+
+      <!-- Pinned bottom: user + theme + logout -->
+      <div class="sidebar-bottom">
+        <div class="sidebar-footer">
+          <div class="user-info">
+            <div class="user-avatar">{{ initials }}</div>
+            <div class="user-details">
+              <span class="user-name">{{ auth.fullName }}</span>
+              <span class="user-role">{{ auth.isAdmin ? t('nav.adminRole') : t('nav.salesRepRole') }}</span>
+            </div>
+          </div>
+          <button
+            class="sidebar-icon-btn"
+            @click="toggleTheme"
+            :title="isDark ? t('nav.lightMode') : t('nav.darkMode')"
+          >
+            <i :class="isDark ? 'pi pi-sun' : 'pi pi-moon'" />
+          </button>
+          <button class="logout-btn" @click="handleLogout" :title="t('nav.logout')">
+            <i class="pi pi-sign-out" />
+          </button>
+        </div>
       </div>
     </nav>
 
@@ -141,8 +145,23 @@ function handleLogout() {
   top: 0;
   left: 0;
   bottom: 0;
-  overflow-y: auto;
+  height: 100vh;
+  overflow: hidden;  /* sidebar zelf scrollt niet — .nav-items wel */
   z-index: 100;
+}
+
+/* Scrollbaar nav-middengedeelte */
+.nav-items {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0; /* vereist zodat flex-kind kan krimpen en scrollen */
+}
+
+.nav-items::-webkit-scrollbar { display: none; }
+
+/* Gepinde onderkant: altijd zichtbaar */
+.sidebar-bottom {
+  flex-shrink: 0;
 }
 
 .sidebar-brand {
@@ -230,8 +249,6 @@ function handleLogout() {
   width: 18px;
   text-align: center;
 }
-
-.sidebar-spacer { flex: 1; }
 
 /* ── Footer ───────────────────────────────────────────────────────────────── */
 .sidebar-footer {
@@ -333,7 +350,7 @@ function handleLogout() {
   /* Sidebar default: icon-only (64px) */
   .sidebar {
     width: 64px;
-    overflow: hidden;
+    overflow-x: hidden; /* klipt horizontaal tijdens breedte-animatie */
     transition: width 0.22s ease;
   }
 
