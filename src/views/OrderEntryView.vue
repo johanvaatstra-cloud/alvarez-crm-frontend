@@ -29,21 +29,37 @@
         <!-- Product zoeker -->
         <div class="card search-card">
           <h3>{{ t('orderEntry.addProduct') }}</h3>
+
+          <!-- DEV: testknop om te verifiëren of weergave werkt -->
+          <button
+            v-if="showTestBtn"
+            class="test-btn"
+            @click="addTestProducts"
+          >
+            🧪 Test: voeg 2 producten toe
+          </button>
+
           <div class="search-row">
-            <InputText
+            <input
+              ref="searchInputRef"
               v-model="searchQuery"
               :placeholder="t('orderEntry.searchPlaceholder')"
-              class="search-input"
-              @input="onSearch"
+              class="search-input p-inputtext p-component"
+              type="text"
+              autocomplete="off"
             />
           </div>
 
-          <div v-if="searchResults.length > 0" class="search-results">
+          <div v-if="loadingProducts" class="no-results">
+            <i class="pi pi-spin pi-spinner" /> {{ t('common.loading') }}
+          </div>
+
+          <div v-else-if="searchResults.length > 0" class="search-results">
             <div
               v-for="p in searchResults"
               :key="p.id"
               class="search-result-row"
-              @click="addProduct(p)"
+              @mousedown.prevent="addProduct(p)"
             >
               <div class="sr-info">
                 <span class="sr-name">{{ p.name }}</span>
@@ -55,18 +71,22 @@
                   <span v-if="p.pricePerUnit">€ {{ formatPrice(p.pricePerUnit) }}/{{ p.unit }}</span>
                   <span v-else-if="p.pricePerKg">€ {{ formatPrice(p.pricePerKg) }}/kg</span>
                 </span>
-                <Button icon="pi pi-plus" size="small" rounded text @click.stop="addProduct(p)" />
+                <i class="pi pi-plus sr-add-icon" />
               </div>
             </div>
           </div>
-          <div v-else-if="searchQuery.length >= 2 && !loadingProducts" class="no-results">
+
+          <div v-else-if="searchQuery.length >= 2" class="no-results">
             {{ t('common.noResults') }}
           </div>
         </div>
 
         <!-- Order regels -->
         <div class="card lines-card">
-          <h3>{{ t('orderEntry.orderLines') }} <span class="line-count">({{ lines.length }})</span></h3>
+          <h3>
+            {{ t('orderEntry.orderLines') }}
+            <span class="line-count">({{ lines.length }})</span>
+          </h3>
 
           <div v-if="lines.length === 0" class="empty-lines">
             <i class="pi pi-shopping-cart" />
@@ -74,7 +94,11 @@
           </div>
 
           <div v-else class="lines-list">
-            <div v-for="(line, idx) in lines" :key="idx" class="line-row">
+            <div
+              v-for="line in lines"
+              :key="line.productId"
+              class="line-row"
+            >
               <div class="line-info">
                 <span class="line-name">{{ line.productName }}</span>
                 <span class="line-sku" v-if="line.productSku">{{ line.productSku }}</span>
@@ -82,18 +106,18 @@
 
               <div class="line-controls">
                 <div class="qty-group">
-                  <button class="qty-btn" @click="changeQty(idx, -1)">
+                  <button class="qty-btn" @click="changeQty(line, -1)">
                     <i class="pi pi-minus" />
                   </button>
-                  <InputText
+                  <input
                     v-model.number="line.quantity"
                     type="number"
                     min="0.1"
                     step="0.1"
-                    class="qty-input"
-                    @change="clampQty(idx)"
+                    class="qty-input p-inputtext p-component"
+                    @change="clampQty(line)"
                   />
-                  <button class="qty-btn" @click="changeQty(idx, 1)">
+                  <button class="qty-btn" @click="changeQty(line, 1)">
                     <i class="pi pi-plus" />
                   </button>
                 </div>
@@ -102,23 +126,23 @@
 
                 <div class="price-group">
                   <span class="price-label">€</span>
-                  <InputText
+                  <input
                     v-model.number="line.unitPrice"
                     type="number"
                     min="0"
                     step="0.01"
-                    class="price-input"
+                    class="price-input p-inputtext p-component"
                   />
                 </div>
 
                 <div class="discount-group">
-                  <InputText
+                  <input
                     v-model.number="line.discount"
                     type="number"
                     min="0"
                     max="100"
                     step="1"
-                    class="discount-input"
+                    class="discount-input p-inputtext p-component"
                     :placeholder="t('orderEntry.discount')"
                   />
                   <span class="discount-pct">%</span>
@@ -126,7 +150,7 @@
 
                 <span class="line-total">€ {{ formatPrice(lineTotal(line)) }}</span>
 
-                <button class="remove-btn" @click="removeLine(idx)">
+                <button class="remove-btn" @click="removeLine(line.productId)">
                   <i class="pi pi-trash" />
                 </button>
               </div>
@@ -160,10 +184,15 @@
             <span class="summary-value total-value">€ {{ formatPrice(total) }}</span>
           </div>
 
-          <!-- Opmerking -->
           <div class="notes-row">
-            <label class="notes-label">{{ t('orderEntry.notes') }}</label>
-            <Textarea v-model="notes" :placeholder="t('orderEntry.notesPlaceholder')" rows="3" class="notes-input" />
+            <label for="order-notes" class="notes-label">{{ t('orderEntry.notes') }}</label>
+            <Textarea
+              id="order-notes"
+              v-model="notes"
+              :placeholder="t('orderEntry.notesPlaceholder')"
+              rows="3"
+              class="notes-input"
+            />
           </div>
 
           <div class="action-btns">
@@ -196,11 +225,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
-import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import api from '../api/axios.js'
@@ -214,12 +242,12 @@ const toast    = useToast()
 // ── Params ────────────────────────────────────────────────────────────────────
 const clientId       = route.params.clientId
 const plannedVisitId = route.query.visitId || null
-const editId         = route.query.editId  || null   // lokaal UUID bij bewerken
+const editId         = route.query.editId  || null
 
 // ── State ─────────────────────────────────────────────────────────────────────
 const clientName      = ref('')
 const visitLabel      = ref('')
-const lines           = ref([])
+const lines           = ref([])   // [{ productId, productName, productSku, quantity, unit, unitPrice, discount }]
 const notes           = ref('')
 const saving          = ref(false)
 const confirming      = ref(false)
@@ -228,7 +256,26 @@ const searchResults   = ref([])
 const loadingProducts = ref(false)
 const allProducts     = ref([])
 const isOnline        = ref(navigator.onLine)
-const localOrderId    = ref(null)  // huidig lokaal order id
+const localOrderId    = ref(null)
+const searchInputRef  = ref(null)   // template ref op native <input>
+
+// Testknop alleen zichtbaar op localhost
+const showTestBtn = import.meta.env.DEV
+
+// ── Zoeken via watch — betrouwbaarder dan @input op PrimeVue componenten ──────
+watch(searchQuery, (q) => {
+  const trimmed = q.trim().toLowerCase()
+  if (trimmed.length < 2) {
+    searchResults.value = []
+    return
+  }
+  searchResults.value = allProducts.value
+    .filter(p =>
+      p.name.toLowerCase().includes(trimmed) ||
+      (p.sku || '').toLowerCase().includes(trimmed)
+    )
+    .slice(0, 8)
+})
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
 onMounted(async () => {
@@ -258,7 +305,9 @@ async function loadClient() {
       const v = res.data?.data
       if (v) {
         const d = new Date(v.plannedDateTime)
-        visitLabel.value = d.toLocaleDateString('nl-NL', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        visitLabel.value = d.toLocaleDateString('nl-NL', {
+          day: '2-digit', month: '2-digit', year: 'numeric'
+        })
       }
     } catch { /* bezoek niet beschikbaar */ }
   }
@@ -267,11 +316,11 @@ async function loadClient() {
 async function loadProducts() {
   loadingProducts.value = true
   try {
-    // Haal alle actieve producten op (max 500)
     const res = await api.get('/products?pageSize=500&onlyActive=true')
     allProducts.value = res.data?.data || []
-  } catch {
-    // offline of fout — zoeken werkt niet
+    console.log(`[OrderEntry] ${allProducts.value.length} producten geladen`)
+  } catch (err) {
+    console.warn('[OrderEntry] Producten laden mislukt (offline?):', err.message)
     allProducts.value = []
   } finally {
     loadingProducts.value = false
@@ -283,83 +332,73 @@ async function loadExistingOrder(id) {
   if (!order) return
   localOrderId.value = id
   notes.value = order.notes || ''
-  lines.value = order.lines.map(l => ({
-    productId:   l.productId,
-    productName: l.productName,
-    productSku:  l.productSku || '',
-    quantity:    l.quantity,
-    unit:        l.unit,
-    unitPrice:   l.unitPrice,
-    discount:    l.discount ?? 0,
-  }))
-}
-
-// ── Zoeken ────────────────────────────────────────────────────────────────────
-function onSearch() {
-  const q = searchQuery.value.trim().toLowerCase()
-  if (q.length < 2) {
-    searchResults.value = []
-    return
-  }
-  searchResults.value = allProducts.value
-    .filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      (p.sku || '').toLowerCase().includes(q)
-    )
-    .slice(0, 8)
+  lines.value = order.lines.map(l => ({ ...l }))
+  console.log('[OrderEntry] Bestaande bestelling geladen, regels:', lines.value.length)
 }
 
 // ── Regels beheren ────────────────────────────────────────────────────────────
 function addProduct(p) {
-  // Verhoog aantal als product al in de lijst staat
   const exists = lines.value.find(l => l.productId === p.id)
   if (exists) {
-    exists.quantity += 1
+    exists.quantity = Math.round((exists.quantity + 1) * 10) / 10
+    console.log(`[OrderEntry] Aantal verhoogd: ${p.name} → ${exists.quantity}`)
   } else {
     lines.value.push({
       productId:   p.id,
       productName: p.name,
       productSku:  p.sku || '',
       quantity:    1,
-      unit:        p.unit || 'st',   // eenheid vast uit catalogus, niet bewerkbaar
-      unitPrice:   p.pricePerUnit || p.pricePerKg || 0,
+      unit:        p.unit || 'st',     // eenheid vast uit catalogus
+      unitPrice:   Number(p.pricePerUnit || p.pricePerKg || 0),
       discount:    0,
     })
+    console.log(`[OrderEntry] Product toegevoegd: ${p.name} | regels nu:`, lines.value.length)
   }
-  // Reset zoekbalk zodat meteen een volgend product gezocht kan worden
-  searchQuery.value   = ''
+
+  // Reset zoekbalk — gebruik nextTick zodat Vue de DOM eerst bijwerkt
   searchResults.value = []
-  // Focus terug op zoekbalk
+  searchQuery.value   = ''
+
   nextTick(() => {
-    document.querySelector('.search-input')?.focus()
+    searchInputRef.value?.focus()
+    console.log('[OrderEntry] Huidige regels:', lines.value.map(l => `${l.productName} ×${l.quantity}`))
   })
 }
 
-function removeLine(idx) {
-  lines.value.splice(idx, 1)
+// Testknop: voegt 2 hardcoded regels toe om weergave te verifiëren
+function addTestProducts() {
+  lines.value = [
+    { productId: 'test-1', productName: 'Test Product A', productSku: 'TST001', quantity: 2, unit: 'kg', unitPrice: 12.50, discount: 0 },
+    { productId: 'test-2', productName: 'Test Product B', productSku: 'TST002', quantity: 1, unit: 'doos', unitPrice: 45.00, discount: 10 },
+  ]
+  console.log('[OrderEntry] Testproducten toegevoegd:', lines.value)
 }
 
-function changeQty(idx, delta) {
-  const l = lines.value[idx]
-  l.quantity = Math.max(0.1, Math.round((l.quantity + delta) * 10) / 10)
+function removeLine(productId) {
+  const idx = lines.value.findIndex(l => l.productId === productId)
+  if (idx !== -1) lines.value.splice(idx, 1)
+  console.log('[OrderEntry] Regel verwijderd, regels nu:', lines.value.length)
 }
 
-function clampQty(idx) {
-  const l = lines.value[idx]
-  if (!l.quantity || l.quantity < 0.1) l.quantity = 0.1
+function changeQty(line, delta) {
+  line.quantity = Math.max(0.1, Math.round((line.quantity + delta) * 10) / 10)
+}
+
+function clampQty(line) {
+  if (!line.quantity || line.quantity < 0.1) line.quantity = 0.1
 }
 
 // ── Berekeningen ──────────────────────────────────────────────────────────────
 function lineTotal(l) {
-  const gross = l.quantity * l.unitPrice
-  return gross - (gross * (l.discount || 0) / 100)
+  const gross = Number(l.quantity) * Number(l.unitPrice)
+  return gross - (gross * Number(l.discount || 0) / 100)
 }
 
 const subtotal = computed(() => lines.value.reduce((sum, l) => sum + lineTotal(l), 0))
-const total    = computed(() => subtotal.value)  // btw buiten scope
+const total    = computed(() => subtotal.value)
 
 function formatPrice(v) {
-  return (v || 0).toFixed(2).replace('.', ',')
+  return (Number(v) || 0).toFixed(2).replace('.', ',')
 }
 
 // ── Opslaan ───────────────────────────────────────────────────────────────────
@@ -379,7 +418,6 @@ async function saveOrder(status) {
     }))
 
     if (localOrderId.value) {
-      // Bestaande offline bestelling bijwerken
       const existing = await getOrderById(localOrderId.value)
       if (existing) {
         existing.lines  = orderLines
@@ -388,11 +426,10 @@ async function saveOrder(status) {
         await persistOrder(existing)
       }
     } else {
-      // Nieuwe offline bestelling aanmaken
       const order = await createOrder({
-        clientId:       clientId,
+        clientId,
         clientName:     clientName.value,
-        plannedVisitId: plannedVisitId,
+        plannedVisitId,
         lines:          orderLines,
       })
       order.notes  = notes.value
@@ -401,7 +438,6 @@ async function saveOrder(status) {
       localOrderId.value = order.id
     }
 
-    // Probeer direct te synchen als we online zijn en status = confirmed
     if (status === 'confirmed' && isOnline.value) {
       const { syncPendingOrders } = await import('../services/syncService.js')
       await syncPendingOrders()
@@ -415,10 +451,10 @@ async function saveOrder(status) {
 
     router.push('/orders')
   } catch (err) {
-    console.error(err)
+    console.error('[OrderEntry] Opslaan mislukt:', err)
     toast.add({ severity: 'error', summary: t('common.saveFailed'), life: 4000 })
   } finally {
-    saving.value    = false
+    saving.value     = false
     confirming.value = false
   }
 }
@@ -438,7 +474,6 @@ function goBack() {
   gap: 16px;
   margin-bottom: 20px;
 }
-
 .page-header h1 { margin: 0 0 4px; font-size: 22px; color: #1a2e1a; }
 
 .back-btn {
@@ -518,14 +553,43 @@ function goBack() {
 
 .line-count { font-weight: 400; color: #888; }
 
+/* ── Test knop ──────────────────────────────────────────────────────────────── */
+.test-btn {
+  background: #fff9e6;
+  border: 1px dashed #f59e0b;
+  color: #92400e;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: block;
+}
+
 /* ── Product zoeker ─────────────────────────────────────────────────────────── */
 .search-row { margin-bottom: 8px; }
-.search-input { width: 100%; }
+
+.search-input {
+  width: 100%;
+  display: block;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  box-sizing: border-box;
+}
+.search-input:focus {
+  border-color: #2d6a4f;
+  box-shadow: 0 0 0 2px rgba(45, 106, 79, .15);
+}
 
 .search-results {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   overflow: hidden;
+  margin-top: 4px;
 }
 
 .search-result-row {
@@ -536,8 +600,8 @@ function goBack() {
   cursor: pointer;
   border-bottom: 1px solid #f5f5f5;
   transition: background .15s;
+  user-select: none;
 }
-
 .search-result-row:last-child { border-bottom: none; }
 .search-result-row:hover { background: #f1f8f1; }
 
@@ -564,6 +628,16 @@ function goBack() {
 }
 
 .sr-prices { font-size: 13px; color: #555; white-space: nowrap; }
+
+.sr-add-icon {
+  color: #2d6a4f;
+  font-size: 14px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .no-results { color: #888; font-size: 14px; padding: 8px 0; }
 
@@ -618,9 +692,12 @@ function goBack() {
 .qty-btn:hover { background: #dceadc; }
 
 .qty-input {
-  width: 60px !important;
+  width: 60px;
   text-align: center;
-  padding: 4px 6px !important;
+  padding: 4px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 .unit-badge {
@@ -647,8 +724,21 @@ function goBack() {
   color: #666;
 }
 
-.price-input    { width: 70px !important; }
-.discount-input { width: 50px !important; }
+.price-input {
+  width: 70px;
+  padding: 4px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.discount-input {
+  width: 50px;
+  padding: 4px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
 
 .line-total {
   font-weight: 600;
