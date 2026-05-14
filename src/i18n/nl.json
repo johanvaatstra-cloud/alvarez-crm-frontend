@@ -146,6 +146,19 @@
                          "orderLines":  "regel(s)",
                          "enterOrder":  "Bestelling invoeren"
                      },
+    "menu":  {
+                 "title":           "Menukaart",
+                 "noMenu":          "Nog geen menukaart — upload een PDF of vul een URL in",
+                 "typeUrl":         "URL",
+                 "typePdf":         "PDF",
+                 "lastUpdated":     "Bijgewerkt op",
+                 "dishesRecognized":"Gerechten herkend",
+                 "uploadPdf":       "PDF uploaden",
+                 "scrapeUrl":       "URL scrapen",
+                 "urlPlaceholder":  "https://restaurant.nl/menu",
+                 "uploadSuccess":   "Menukaart succesvol bijgewerkt!",
+                 "generateNow":     "Genereer suggesties nu"
+             },
     "agenda":  {
                    "title":  "Agenda",
                    "subtitle":  "Geplande bezoeken",

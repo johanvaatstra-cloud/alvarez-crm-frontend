@@ -146,6 +146,19 @@
                          "orderLines":  "line(s)",
                          "enterOrder":  "Enter order"
                      },
+    "menu":  {
+                 "title":           "Menu card",
+                 "noMenu":          "No menu card yet — upload a PDF or enter a URL",
+                 "typeUrl":         "URL",
+                 "typePdf":         "PDF",
+                 "lastUpdated":     "Updated on",
+                 "dishesRecognized":"Dishes recognized",
+                 "uploadPdf":       "Upload PDF",
+                 "scrapeUrl":       "Scrape URL",
+                 "urlPlaceholder":  "https://restaurant.com/menu",
+                 "uploadSuccess":   "Menu card updated successfully!",
+                 "generateNow":     "Generate suggestions now"
+             },
     "agenda":  {
                    "title":  "Agenda",
                    "subtitle":  "Planned visits",

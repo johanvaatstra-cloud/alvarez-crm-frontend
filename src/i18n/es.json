@@ -146,6 +146,19 @@
                          "orderLines":  "línea(s)",
                          "enterOrder":  "Introducir pedido"
                      },
+    "menu":  {
+                 "title":           "Carta del menú",
+                 "noMenu":          "Sin carta de menú — sube un PDF o introduce una URL",
+                 "typeUrl":         "URL",
+                 "typePdf":         "PDF",
+                 "lastUpdated":     "Actualizado el",
+                 "dishesRecognized":"Platos reconocidos",
+                 "uploadPdf":       "Subir PDF",
+                 "scrapeUrl":       "Importar URL",
+                 "urlPlaceholder":  "https://restaurante.es/carta",
+                 "uploadSuccess":   "¡Carta actualizada con éxito!",
+                 "generateNow":     "Generar sugerencias ahora"
+             },
     "agenda":  {
                    "title":  "Agenda",
                    "subtitle":  "Visitas planificadas",
