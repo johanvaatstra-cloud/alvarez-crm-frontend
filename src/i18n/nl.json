@@ -353,7 +353,7 @@
                },
     "orderEntry":  {
                        "title":  "Nieuwe bestelling",
-                       "offlineBanner":  "Offline — wordt gesynchroniseerd zodra verbinding hersteld is",
+                       "offlineBanner":  "Offline modus — klantdata van laatste synchronisatie wordt gebruikt",
                        "addProduct":  "Product toevoegen",
                        "searchPlaceholder":  "Zoek op naam of SKU...",
                        "orderLines":  "Bestelregels",

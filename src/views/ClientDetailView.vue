@@ -412,6 +412,7 @@ import InputText from 'primevue/inputtext'
 import VisitFormDialog from '../components/VisitFormDialog.vue'
 import ReportFormDialog from '../components/ReportFormDialog.vue'
 import { useAuthStore } from '../stores/auth'
+import { cacheClients } from '../services/offlineClientCache.js'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -529,6 +530,7 @@ async function load() {
     form.notes = data.data.crmNotes ?? ''
     form.clientType = data.data.crmClientType ?? 'Restaurant'
     form.salesRepId = data.data.crmSalesRepId ?? null
+    cacheClients([data.data])   // cache voor offline gebruik in OrderEntryView
   } catch (e) {
     error.value = e.response?.status === 404
       ? t('clientDetail.notFound')

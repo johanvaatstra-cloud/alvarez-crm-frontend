@@ -353,7 +353,7 @@
                },
     "orderEntry":  {
                        "title":  "New order",
-                       "offlineBanner":  "Offline — will sync when connection is restored",
+                       "offlineBanner":  "Offline mode — client data from last sync is being used",
                        "addProduct":  "Add product",
                        "searchPlaceholder":  "Search by name or SKU...",
                        "orderLines":  "Order lines",

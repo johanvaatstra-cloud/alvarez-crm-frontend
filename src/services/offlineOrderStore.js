@@ -2,50 +2,18 @@
  * offlineOrderStore.js
  * IndexedDB wrapper for offline order storage.
  * DB: 'alvarez_crm'  Store: 'crm_offline_orders'
+ *
+ * DB-verbinding en versioning worden beheerd door idb.js.
  */
 
-const DB_NAME = 'alvarez_crm'
-const STORE   = 'crm_offline_orders'
-const DB_VERSION = 1
+import { openDb, promisify } from './idb.js'
 
-let _db = null
-
-function openDb() {
-  if (_db) return Promise.resolve(_db)
-
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION)
-
-    req.onupgradeneeded = (e) => {
-      const db = e.target.result
-      if (!db.objectStoreNames.contains(STORE)) {
-        const store = db.createObjectStore(STORE, { keyPath: 'id' })
-        store.createIndex('status',    'status',    { unique: false })
-        store.createIndex('clientId',  'clientId',  { unique: false })
-        store.createIndex('createdAt', 'createdAt', { unique: false })
-      }
-    }
-
-    req.onsuccess = (e) => {
-      _db = e.target.result
-      resolve(_db)
-    }
-
-    req.onerror = (e) => reject(e.target.error)
-  })
-}
+const STORE = 'crm_offline_orders'
 
 function tx(mode = 'readonly') {
   return openDb().then(db => {
     const t = db.transaction(STORE, mode)
     return t.objectStore(STORE)
-  })
-}
-
-function promisify(req) {
-  return new Promise((resolve, reject) => {
-    req.onsuccess = (e) => resolve(e.target.result)
-    req.onerror   = (e) => reject(e.target.error)
   })
 }
 

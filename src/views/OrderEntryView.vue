@@ -233,6 +233,7 @@ import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import api from '../api/axios.js'
 import { createOrder, saveOrder as persistOrder, getOrderById } from '../services/offlineOrderStore.js'
+import { cacheClients, getCachedClient, cacheProducts, getCachedProducts } from '../services/offlineClientCache.js'
 
 const { t }    = useI18n()
 const route    = useRoute()
@@ -294,9 +295,15 @@ async function loadClient() {
   try {
     const res = await api.get(`/clients/${clientId}`)
     const c = res.data?.data
-    if (c) clientName.value = c.companyName
+    if (c) {
+      clientName.value = c.companyName
+      cacheClients([c])   // ververs cache terwijl we online zijn
+    }
   } catch {
-    clientName.value = clientId
+    // Offline of fout: gebruik gecachede klantgegevens
+    const cached = await getCachedClient(clientId)
+    clientName.value = cached?.companyName || clientId
+    console.log('[OrderEntry] Klant uit cache geladen:', clientName.value)
   }
 
   if (plannedVisitId) {
@@ -318,10 +325,14 @@ async function loadProducts() {
   try {
     const res = await api.get('/products?pageSize=500&onlyActive=true')
     allProducts.value = res.data?.data || []
-    console.log(`[OrderEntry] ${allProducts.value.length} producten geladen`)
+    console.log(`[OrderEntry] ${allProducts.value.length} producten geladen (online)`)
+    if (allProducts.value.length) cacheProducts(allProducts.value)  // ververs cache
   } catch (err) {
     console.warn('[OrderEntry] Producten laden mislukt (offline?):', err.message)
-    allProducts.value = []
+    // Offline fallback: gebruik gecachede catalogus
+    const cached = await getCachedProducts()
+    allProducts.value = cached.filter(p => p.isActive !== false)
+    console.log(`[OrderEntry] ${allProducts.value.length} producten uit cache geladen`)
   } finally {
     loadingProducts.value = false
   }

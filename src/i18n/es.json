@@ -353,7 +353,7 @@
                },
     "orderEntry":  {
                        "title":  "Nuevo pedido",
-                       "offlineBanner":  "Sin conexión — se sincronizará al restaurar la conexión",
+                       "offlineBanner":  "Modo sin conexión — se usan los datos de clientes de la última sincronización",
                        "addProduct":  "Añadir producto",
                        "searchPlaceholder":  "Buscar por nombre o SKU...",
                        "orderLines":  "Líneas del pedido",

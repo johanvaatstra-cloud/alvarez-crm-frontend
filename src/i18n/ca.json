@@ -353,7 +353,7 @@
                },
     "orderEntry":  {
                        "title":  "Nova comanda",
-                       "offlineBanner":  "Sense connexió — es sincronitzarà quan es restauri la connexió",
+                       "offlineBanner":  "Mode sense connexió — s'utilitzen les dades de clients de l'última sincronització",
                        "addProduct":  "Afegir producte",
                        "searchPlaceholder":  "Cerca per nom o SKU...",
                        "orderLines":  "Línies de la comanda",

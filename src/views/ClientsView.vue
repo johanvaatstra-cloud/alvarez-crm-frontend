@@ -67,6 +67,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
 import api from '../api/axios'
+import { cacheClients } from '../services/offlineClientCache.js'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
@@ -111,6 +112,7 @@ async function load() {
     })
     clients.value = data.data
     pagination.total = data.pagination?.totalCount ?? 0
+    cacheClients(data.data)   // cache voor offline gebruik
   } finally {
     loading.value = false
   }
