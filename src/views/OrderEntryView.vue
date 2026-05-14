@@ -460,7 +460,11 @@ async function saveOrder(status) {
       life: 3000,
     })
 
-    router.push('/orders')
+    if (status === 'confirmed') {
+      router.push('/clients/' + clientId)
+    } else {
+      router.push('/orders')
+    }
   } catch (err) {
     console.error('[OrderEntry] Opslaan mislukt:', err)
     toast.add({ severity: 'error', summary: t('common.saveFailed'), life: 4000 })

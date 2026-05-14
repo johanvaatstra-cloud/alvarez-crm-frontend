@@ -201,17 +201,26 @@
         <div class="glass-card">
           <div class="card-hdr">
             <span class="card-title">{{ t('clientCard.location') }}</span>
-            <a
-              v-if="googleMapsUrl"
-              :href="googleMapsUrl"
-              target="_blank"
-              rel="noopener"
-              class="btn-link"
-            >
-              <i class="pi pi-map-marker" /> {{ t('clientCard.openMaps') }}
-            </a>
           </div>
-          <div class="map-ph">
+
+          <!-- Embedded Google Maps iframe (wanneer API-key beschikbaar) -->
+          <template v-if="googleMapsEmbedUrl">
+            <iframe
+              :src="googleMapsEmbedUrl"
+              class="map-iframe"
+              allowfullscreen
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            />
+            <div class="map-addr-footer">
+              <span class="map-addr-text">
+                {{ [client.addressStreet, client.addressPostalCode, client.city].filter(Boolean).join(', ') }}
+              </span>
+            </div>
+          </template>
+
+          <!-- Adres + knop (wanneer geen API-key) -->
+          <div v-else class="map-ph">
             <div class="map-grid" />
             <div class="map-pin-wrap">
               <div class="map-pin-circle">
@@ -222,6 +231,9 @@
                 <p class="map-city">
                   {{ [client.addressPostalCode, client.city, client.addressCountry].filter(Boolean).join(' · ') }}
                 </p>
+                <button v-if="googleMapsUrl" class="map-open-btn" @click="openInMaps">
+                  <i class="pi pi-map-marker" /> {{ t('clientCard.showOnMap') }}
+                </button>
               </div>
               <p v-else class="map-empty">{{ t('clientCard.noAddress') }}</p>
             </div>
@@ -278,7 +290,7 @@
             <span>{{ t('clientCard.menuTip') }}: {{ menu.dishes.slice(0, 3).join(', ') }}</span>
           </div>
 
-          <!-- Suggesties -->
+          <!-- Suggesties — zichtbaar voor Admin én SalesRep -->
           <div v-if="suggestions.length === 0 && !generatingSuggestions" class="card-empty">
             <i class="pi pi-star" />
             <p>{{ isAdmin ? t('clientDetail.generateAdviceHint') : t('clientDetail.noAdviceYet') }}</p>
@@ -459,7 +471,8 @@ const { t, locale } = useI18n()
 const route  = useRoute()
 const router = useRouter()
 const toast  = useToast()
-const { isAdmin } = useAuthStore()
+const authStore = useAuthStore()
+const isAdmin = authStore.isAdmin   // ComputedRef<boolean> — auto-unwrapped in templates
 
 const DFNS_LOCALES = { nl, en: enGB, es, ca }
 const dateFnsLocale = computed(() => DFNS_LOCALES[locale.value] ?? nl)
@@ -602,7 +615,7 @@ const loadingSalesReps = ref(false)
 const assigning        = ref(false)
 
 async function loadSalesReps() {
-  if (!isAdmin) return
+  if (!isAdmin.value) return
   loadingSalesReps.value = true
   try {
     const { data } = await api.get('/admin/users')
@@ -728,16 +741,16 @@ const lastOrderDaysAgo = computed(() => {
 const timeline = computed(() => {
   const items = []
   for (const v of visits.value) {
-    items.push({ date: v.plannedDateTime, label: v.purpose || t('clientCard.visitLabel'), sub: statusLabel(v.status), color: v.status === 'Completed' ? '#4ade80' : v.status === 'Scheduled' ? '#60a5fa' : '#9ca3af' })
+    const visitLabel = v.purpose
+      ? `${t('clientCard.visitLabel')} — ${v.purpose}`
+      : t('clientCard.visitLabel')
+    items.push({ date: v.plannedDateTime, label: visitLabel, sub: statusLabel(v.status), color: v.status === 'Completed' ? '#4ade80' : v.status === 'Scheduled' ? '#60a5fa' : '#9ca3af' })
   }
   for (const o of clientOrders.value) {
     items.push({ date: o.orderDate || o.createdAt, label: `€ ${formatOrderTotal(o)}`, sub: orderStatusLabel(o.status), color: '#f59e0b' })
   }
   for (const r of reports.value) {
     items.push({ date: r.visitDate, label: t('clientCard.reportLabel'), sub: reportStatusLabel(r.status), color: '#a78bfa' })
-  }
-  if (menu.value?.fetchedAt) {
-    items.push({ date: menu.value.fetchedAt, label: t('clientDetail.menuScraped'), sub: `${menu.value.dishes.length} ${t('clientDetail.dishesFound').toLowerCase()}`, color: '#22d3ee' })
   }
   return items.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 8)
 })
@@ -773,11 +786,29 @@ const revenueByMonth = computed(() => {
 
 const maxRevenue = computed(() => Math.max(...revenueByMonth.value.map(m => m.value), 1))
 
-const googleMapsUrl = computed(() => {
+const _mapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_KEY ?? ''
+
+const googleMapsQuery = computed(() => {
   if (!client.value) return ''
-  const parts = [client.value.addressStreet, client.value.city, client.value.addressCountry].filter(Boolean)
-  return parts.length ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(parts.join(', '))}` : ''
+  const parts = [client.value.addressStreet, client.value.addressPostalCode, client.value.city, client.value.addressCountry].filter(Boolean)
+  return parts.length ? encodeURIComponent(parts.join(' ')) : ''
 })
+
+const googleMapsUrl = computed(() =>
+  googleMapsQuery.value
+    ? `https://www.google.com/maps/search/?api=1&query=${googleMapsQuery.value}`
+    : ''
+)
+
+const googleMapsEmbedUrl = computed(() =>
+  _mapsApiKey && googleMapsQuery.value
+    ? `https://www.google.com/maps/embed/v1/place?key=${_mapsApiKey}&q=${googleMapsQuery.value}`
+    : ''
+)
+
+function openInMaps() {
+  if (googleMapsUrl.value) window.location.href = googleMapsUrl.value
+}
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
 onMounted(() => {
@@ -1086,6 +1117,30 @@ onMounted(() => {
 .info-row-action { padding-top: 4px; padding-bottom: 8px; }
 
 /* ── Locatiekaart ────────────────────────────────────────────────────────── */
+.map-iframe {
+  width: 100%; height: 220px;
+  border: none; display: block;
+}
+.map-addr-footer {
+  padding: 8px 18px;
+  border-top: 1px solid var(--divider);
+}
+.map-addr-text { font-size: 12px; color: var(--muted); }
+
+.map-open-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 8px; cursor: pointer;
+  font-size: 12px; font-weight: 600;
+  transition: background .15s;
+}
+.map-open-btn:hover { background: rgba(74,222,128,0.22); }
+.theme-light .map-open-btn:hover { background: rgba(45,106,79,0.18); }
+
 .map-ph {
   position: relative;
   height: 200px;

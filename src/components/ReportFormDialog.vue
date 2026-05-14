@@ -86,14 +86,19 @@
             size="small"
             @click="startRecording"
           />
-          <Button
-            v-else
-            icon="pi pi-stop"
-            :label="`${t('reportForm.stopRecording')} (${recordingSeconds}s)`"
-            severity="danger"
-            size="small"
-            @click="stopRecording"
-          />
+          <div v-else class="recording-active">
+            <span class="recording-start-label">
+              <i class="pi pi-clock" />
+              {{ t('reportForm.recordingStarted', { time: recordingStartTime }) }}
+            </span>
+            <Button
+              icon="pi pi-stop"
+              :label="`${t('reportForm.stopRecording')} (${recordingSeconds}s)`"
+              severity="danger"
+              size="small"
+              @click="stopRecording"
+            />
+          </div>
         </div>
 
         <!-- Recording error detail -->
@@ -163,6 +168,7 @@ const fileInput = ref(null)
 // In-browser recording
 const recording = ref(false)
 const recordingSeconds = ref(0)
+const recordingStartTime = ref('')
 const recordingError = ref(null)
 let mediaRecorder = null
 let recordedChunks = []
@@ -283,6 +289,7 @@ async function startRecording() {
     mediaRecorder.start()
     recording.value = true
     recordingSeconds.value = 0
+    recordingStartTime.value = new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
     recordingTimer = setInterval(() => recordingSeconds.value++, 1000)
   } catch (err) {
     const name = err?.name ?? 'Error'
@@ -306,6 +313,7 @@ function reset() {
   form.visitDate = props.prefillDate ? new Date(props.prefillDate) : new Date()
   form.plannedVisitId = props.prefillVisitId ?? null
   recordingError.value = null
+  recordingStartTime.value = ''
   clearAudio()
   stopRecording()
 }
@@ -330,6 +338,7 @@ async function submit() {
     if (audioFile.value) {
       const fd = new FormData()
       fd.append('audio', audioFile.value)
+      if (recordingStartTime.value) fd.append('startTime', recordingStartTime.value)
       await api.post(`/reports/${reportId}/audio`, fd, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
@@ -399,6 +408,25 @@ onMounted(async () => {
 
 .hidden-input {
   display: none;
+}
+
+.recording-active {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recording-start-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #e03131;
+}
+
+.recording-start-label .pi {
+  font-size: 12px;
 }
 
 .audio-file-info {
