@@ -49,11 +49,14 @@
                 <span class="sr-name">{{ p.name }}</span>
                 <span class="sr-sku">{{ p.sku }}</span>
               </div>
-              <div class="sr-prices">
-                <span v-if="p.pricePerUnit">€ {{ formatPrice(p.pricePerUnit) }}/{{ p.unit }}</span>
-                <span v-else-if="p.pricePerKg">€ {{ formatPrice(p.pricePerKg) }}/kg</span>
+              <div class="sr-right">
+                <span class="sr-unit">{{ p.unit }}</span>
+                <span class="sr-prices">
+                  <span v-if="p.pricePerUnit">€ {{ formatPrice(p.pricePerUnit) }}/{{ p.unit }}</span>
+                  <span v-else-if="p.pricePerKg">€ {{ formatPrice(p.pricePerKg) }}/kg</span>
+                </span>
+                <Button icon="pi pi-plus" size="small" rounded text @click.stop="addProduct(p)" />
               </div>
-              <Button icon="pi pi-plus" size="small" rounded text />
             </div>
           </div>
           <div v-else-if="searchQuery.length >= 2 && !loadingProducts" class="no-results">
@@ -95,11 +98,7 @@
                   </button>
                 </div>
 
-                <Select
-                  v-model="line.unit"
-                  :options="unitOptions"
-                  class="unit-select"
-                />
+                <span class="unit-badge">{{ line.unit }}</span>
 
                 <div class="price-group">
                   <span class="price-label">€</span>
@@ -197,12 +196,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
 import InputText from 'primevue/inputtext'
-import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import api from '../api/axios.js'
@@ -231,8 +229,6 @@ const loadingProducts = ref(false)
 const allProducts     = ref([])
 const isOnline        = ref(navigator.onLine)
 const localOrderId    = ref(null)  // huidig lokaal order id
-
-const unitOptions = ['st', 'kg', 'g', 'l', 'dl', 'doos', 'pak', 'zak', 'fles', 'blik']
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
 onMounted(async () => {
@@ -315,6 +311,7 @@ function onSearch() {
 
 // ── Regels beheren ────────────────────────────────────────────────────────────
 function addProduct(p) {
+  // Verhoog aantal als product al in de lijst staat
   const exists = lines.value.find(l => l.productId === p.id)
   if (exists) {
     exists.quantity += 1
@@ -324,13 +321,18 @@ function addProduct(p) {
       productName: p.name,
       productSku:  p.sku || '',
       quantity:    1,
-      unit:        p.unit || 'st',
+      unit:        p.unit || 'st',   // eenheid vast uit catalogus, niet bewerkbaar
       unitPrice:   p.pricePerUnit || p.pricePerKg || 0,
       discount:    0,
     })
   }
+  // Reset zoekbalk zodat meteen een volgend product gezocht kan worden
   searchQuery.value   = ''
   searchResults.value = []
+  // Focus terug op zoekbalk
+  nextTick(() => {
+    document.querySelector('.search-input')?.focus()
+  })
 }
 
 function removeLine(idx) {
@@ -542,7 +544,26 @@ function goBack() {
 .sr-info { flex: 1; min-width: 0; }
 .sr-name { font-size: 14px; font-weight: 500; display: block; }
 .sr-sku  { font-size: 12px; color: #888; }
-.sr-prices { font-size: 13px; color: #2d6a4f; white-space: nowrap; }
+
+.sr-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.sr-unit {
+  background: #e8f5e9;
+  color: #2d6a4f;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+
+.sr-prices { font-size: 13px; color: #555; white-space: nowrap; }
 
 .no-results { color: #888; font-size: 14px; padding: 8px 0; }
 
@@ -602,7 +623,18 @@ function goBack() {
   padding: 4px 6px !important;
 }
 
-.unit-select { width: 80px; }
+.unit-badge {
+  background: #e8f5e9;
+  color: #2d6a4f;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 
 .price-group, .discount-group {
   display: flex;
