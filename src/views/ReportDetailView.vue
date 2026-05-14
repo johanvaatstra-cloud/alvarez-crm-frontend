@@ -474,7 +474,7 @@ onUnmounted(stopPolling)
   align-items: start;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
   .report-grid { grid-template-columns: 1fr; }
 }
 

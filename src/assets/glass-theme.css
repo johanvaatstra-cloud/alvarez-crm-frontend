@@ -160,3 +160,13 @@ html.theme-dark .p-textarea {
   border-color: var(--input-border) !important;
   color: var(--text) !important;
 }
+
+/* ── Tablet responsive scaling ───────────────────────────────────────────── */
+@media (max-width: 900px) {
+  html { font-size: 13px; }
+  .glass-card { padding: 10px 12px; }
+}
+
+@media (max-width: 768px) {
+  html { font-size: 12px; }
+}

@@ -1,7 +1,16 @@
 <template>
   <div class="shell">
     <!-- Sidebar -->
-    <nav class="sidebar">
+    <nav class="sidebar" :class="{ 'sidebar--expanded': sidebarExpanded }">
+      <!-- Hamburger toggle (tablet only) -->
+      <button
+        class="sidebar-toggle"
+        @click="sidebarExpanded = !sidebarExpanded"
+        :title="sidebarExpanded ? 'Inklappen' : 'Uitklappen'"
+      >
+        <i :class="sidebarExpanded ? 'pi pi-chevron-left' : 'pi pi-bars'" />
+      </button>
+
       <div class="sidebar-brand">
         <div class="logo-mark">AC</div>
         <div class="brand-text">
@@ -88,7 +97,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
@@ -98,6 +107,8 @@ const { t } = useI18n()
 const auth = useAuthStore()
 const router = useRouter()
 const { isDark, toggleTheme } = useTheme()
+
+const sidebarExpanded = ref(false)
 
 const initials = computed(() => {
   const name = auth.fullName || ''
@@ -311,5 +322,98 @@ function handleLogout() {
   flex: 1;
   min-height: 100vh;
   background: transparent;
+}
+
+/* ── Tablet sidebar: icon-only + hamburger ───────────────────────────────── */
+.sidebar-toggle {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  /* Sidebar default: icon-only (64px) */
+  .sidebar {
+    width: 64px;
+    overflow: hidden;
+    transition: width 0.22s ease;
+  }
+
+  /* Expanded via hamburger: full-width overlay */
+  .sidebar--expanded {
+    width: 240px;
+    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.55);
+    z-index: 200;
+  }
+
+  /* Main content shifts to icon sidebar width */
+  .main {
+    margin-left: 64px;
+  }
+
+  /* Hamburger button visible on tablet */
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 12px auto 4px;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+
+  .sidebar-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  /* Brand: center logo-mark, hide text */
+  .sidebar-brand {
+    justify-content: center;
+    padding: 12px 8px;
+  }
+
+  .brand-text { display: none; }
+  .sidebar--expanded .brand-text { display: flex; }
+
+  /* Nav items: center icon, hide text */
+  .nav-item {
+    justify-content: center;
+    padding: 10px;
+    gap: 0;
+  }
+  .sidebar--expanded .nav-item {
+    justify-content: flex-start;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .nav-item span { display: none; }
+  .sidebar--expanded .nav-item span { display: inline; }
+
+  /* Nav section label: hidden in icon-only mode */
+  .nav-label { display: none; }
+  .sidebar--expanded .nav-label { display: block; }
+
+  /* Footer: hide user details, keep avatar + buttons */
+  .user-details { display: none; }
+  .sidebar--expanded .user-details { display: flex; }
+
+  .sidebar-footer {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 8px;
+  }
+  .sidebar--expanded .sidebar-footer {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding: 16px;
+  }
 }
 </style>

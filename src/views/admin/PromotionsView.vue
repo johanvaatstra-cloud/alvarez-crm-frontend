@@ -427,4 +427,6 @@ onMounted(() => { load(); loadProducts() })
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
+@media (max-width: 900px) { .field-row { grid-template-columns: 1fr; } }
 </style>

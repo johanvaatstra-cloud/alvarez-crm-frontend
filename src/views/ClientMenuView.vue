@@ -499,7 +499,7 @@ onMounted(loadData)
   gap: 16px;
   margin-bottom: 16px;
 }
-@media (max-width: 720px) { .actions-row { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .actions-row { grid-template-columns: 1fr; } }
 
 .action-body {
   padding: 18px;

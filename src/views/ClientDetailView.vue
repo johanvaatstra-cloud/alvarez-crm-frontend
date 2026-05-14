@@ -1000,7 +1000,7 @@ onMounted(() => {
 .hdr-btn-menu:hover    { background: rgba(34,211,238,0.20); }
 
 .hdr-label { font-size: 13px; }
-@media (max-width: 640px) { .hdr-label { display: none; } }
+@media (max-width: 900px) { .hdr-label { display: none; } }
 
 .hdr-btn-sm {
   display: flex; align-items: center; gap: 5px;
@@ -1101,7 +1101,7 @@ onMounted(() => {
   gap: 16px;
   margin-bottom: 16px;
 }
-@media (max-width: 820px) { .grid-2 { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
 
 /* ── Contactgegevens ────────────────────────────────────────────────────────── */
 .info-rows { padding: 4px 0; }
