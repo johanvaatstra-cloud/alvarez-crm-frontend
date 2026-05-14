@@ -40,7 +40,8 @@
                 "adminRole":  "Administrador",
                 "salesRepRole":  "Comercial",
                 "reports":  "Informes",
-                "missingReports":  "Informes pendents"
+                "missingReports":  "Informes pendents",
+                "orders":  "Comandes"
             },
     "login":  {
                   "title":  "CRM — Gestió de vendes",
@@ -136,7 +137,12 @@
                          "dishesFoundToast":  "plats trobats",
                          "uploadFailed":  "Error en pujar",
                          "menuScraped":  "Menú extret",
-                         "scrapeFailed":  "Error en extreure"
+                         "scrapeFailed":  "Error en extreure",
+                         "orders":  "Comandes",
+                         "newOrder":  "Nova comanda",
+                         "noOrders":  "Encara no hi ha comandes",
+                         "orderLines":  "línia/línies",
+                         "enterOrder":  "Introduir comanda"
                      },
     "agenda":  {
                    "title":  "Agenda",
@@ -322,5 +328,55 @@
                            "subtitle":  "Visites passades sense informe de visita registrat",
                            "noMissing":  "Totes les visites tenen informe",
                            "createReport":  "Crear informe"
-                       }
+                       },
+    "orders":  {
+                   "title":  "Comandes",
+                   "syncNow":  "Sincronitzar ara",
+                   "allStatuses":  "Tots els estats",
+                   "noOrders":  "No s'han trobat comandes",
+                   "client":  "Client",
+                   "date":  "Data",
+                   "lines":  "Línies",
+                   "total":  "Total",
+                   "status":  "Estat",
+                   "source":  "Origen",
+                   "offline":  "Sense connexió",
+                   "online":  "En línia",
+                   "statusDraft":  "Esborrany",
+                   "statusConfirmed":  "Confirmat",
+                   "statusSentToErp":  "Enviat a l'ERP",
+                   "statusProcessed":  "Processat",
+                   "statusSynced":  "Sincronitzat",
+                   "deleteTitle":  "Eliminar comanda",
+                   "deleteConfirm":  "Segur que vols eliminar aquest esborrany?",
+                   "deleted":  "Comanda eliminada"
+               },
+    "orderEntry":  {
+                       "title":  "Nova comanda",
+                       "offlineBanner":  "Sense connexió — es sincronitzarà quan es restauri la connexió",
+                       "addProduct":  "Afegir producte",
+                       "searchPlaceholder":  "Cerca per nom o SKU...",
+                       "orderLines":  "Línies de la comanda",
+                       "noLines":  "Encara no s'han afegit productes",
+                       "discount":  "Descompte",
+                       "summary":  "Resum",
+                       "client":  "Client",
+                       "lineCount":  "Nombre de línies",
+                       "subtotal":  "Subtotal",
+                       "total":  "Total",
+                       "notes":  "Notes",
+                       "notesPlaceholder":  "Notes opcionals...",
+                       "saveDraft":  "Desar com a esborrany",
+                       "confirm":  "Confirmar comanda",
+                       "savedDraft":  "Esborrany desat",
+                       "confirmed":  "Comanda confirmada",
+                       "offlineNote":  "Desat sense connexió. S'enviarà quan es restauri la connexió."
+                   },
+    "sync":  {
+                 "successTitle":  "Sincronització completada",
+                 "successDetail":  "{count} comanda/es enviada/es",
+                 "failTitle":  "Sincronització parcialment fallida",
+                 "failDetail":  "{count} comanda/es no enviada/es",
+                 "offlineWarning":  "Sense connexió — sincronització no disponible"
+             }
 }

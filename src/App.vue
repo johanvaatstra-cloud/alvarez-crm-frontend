@@ -4,7 +4,18 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
+import { initSyncService } from './services/syncService.js'
+
+const { t }  = useI18n()
+const toast  = useToast()
+
+onMounted(() => {
+  initSyncService(toast, t)
+})
 </script>
 
 <style>

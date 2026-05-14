@@ -139,6 +139,15 @@
                   <div class="vr-dur">{{ v.estimatedDurationMinutes }} min</div>
                 </div>
                 <Tag :value="statusLabel(v.status)" :severity="statusSeverity(v.status)" />
+                <Button
+                  v-if="v.status === 'Scheduled'"
+                  :label="t('clientDetail.enterOrder')"
+                  icon="pi pi-shopping-cart"
+                  size="small"
+                  severity="secondary"
+                  class="visit-order-btn"
+                  @click="router.push(`/clients/${route.params.id}/order/new?visitId=${v.id}`)"
+                />
               </div>
             </div>
           </div>
@@ -152,9 +161,44 @@
 
         <!-- ── Orders ───────────────────────────────────────────────────── -->
         <TabPanel value="orders">
-          <div class="stub-panel">
-            <i class="pi pi-shopping-cart" />
-            <p>Orderhistorie beschikbaar in fase 3+</p>
+          <div class="tab-content">
+            <div class="visits-header">
+              <h3>{{ t('clientDetail.orders') }}</h3>
+              <Button
+                :label="t('clientDetail.newOrder')"
+                icon="pi pi-plus"
+                size="small"
+                @click="router.push(`/clients/${route.params.id}/order/new`)"
+              />
+            </div>
+
+            <div v-if="loadingOrders" class="loading-visits">
+              <i class="pi pi-spin pi-spinner" /> {{ t('common.loading') }}
+            </div>
+
+            <div v-else-if="clientOrders.length === 0" class="stub-panel">
+              <i class="pi pi-shopping-cart" />
+              <p>{{ t('clientDetail.noOrders') }}</p>
+            </div>
+
+            <div v-else class="visits-list">
+              <div
+                v-for="o in clientOrders"
+                :key="o.id"
+                class="visit-row order-row"
+                @click="router.push(`/orders`)"
+              >
+                <div class="visit-row-date">
+                  <span class="vr-day">{{ formatVisitDay(o.orderDate || o.createdAt) }}</span>
+                  <span class="vr-time">{{ o.lines?.length ?? 0 }} {{ t('clientDetail.orderLines') }}</span>
+                </div>
+                <div class="visit-row-body">
+                  <div class="vr-purpose">€ {{ formatOrderTotal(o) }}</div>
+                </div>
+                <Tag :value="orderStatusLabel(o.status)" :severity="orderStatusSeverity(o.status)" />
+                <i class="pi pi-chevron-right report-arrow" />
+              </div>
+            </div>
           </div>
         </TabPanel>
 
@@ -408,6 +452,35 @@ async function loadVisits() {
   }
 }
 
+// Orders tab
+const clientOrders   = ref([])
+const loadingOrders  = ref(false)
+
+async function loadClientOrders() {
+  loadingOrders.value = true
+  try {
+    const { data } = await api.get('/orders', { params: { clientId: route.params.id, pageSize: 50 } })
+    clientOrders.value = data.data || []
+  } catch {
+    clientOrders.value = []
+  } finally {
+    loadingOrders.value = false
+  }
+}
+
+function orderStatusLabel(s) {
+  const map = { Draft: t('orders.statusDraft'), Confirmed: t('orders.statusConfirmed'), SentToErp: t('orders.statusSentToErp'), ProcessedByErp: t('orders.statusProcessed') }
+  return map[s] || s
+}
+function orderStatusSeverity(s) {
+  const map = { Draft: 'secondary', Confirmed: 'info', SentToErp: 'warn', ProcessedByErp: 'success' }
+  return map[s] || 'secondary'
+}
+function formatOrderTotal(o) {
+  const v = o.totalAmount ?? (o.lines?.reduce((sum, l) => sum + l.quantity * l.unitPrice * (1 - (l.discount || 0) / 100), 0) ?? 0)
+  return v.toFixed(2).replace('.', ',')
+}
+
 // Reports tab
 const reports = ref([])
 const loadingReports = ref(false)
@@ -608,7 +681,7 @@ async function scrapeMenu() {
   }
 }
 
-onMounted(() => { load(); loadVisits(); loadReports(); loadMenu(); loadSuggestions(); loadSalesReps() })
+onMounted(() => { load(); loadVisits(); loadReports(); loadClientOrders(); loadMenu(); loadSuggestions(); loadSalesReps() })
 </script>
 
 <style scoped>
@@ -831,7 +904,10 @@ dd {
   background: #f8f9fa;
   border-radius: 8px;
   border-left: 3px solid #339af0;
+  flex-wrap: wrap;
 }
+
+.visit-order-btn { margin-left: auto; flex-shrink: 0; }
 
 .visit-row-date {
   display: flex;

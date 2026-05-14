@@ -40,7 +40,8 @@
                 "adminRole":  "Administrador",
                 "salesRepRole":  "Comercial",
                 "reports":  "Informes",
-                "missingReports":  "Informes pendientes"
+                "missingReports":  "Informes pendientes",
+                "orders":  "Pedidos"
             },
     "login":  {
                   "title":  "CRM — Gestión de ventas",
@@ -136,7 +137,12 @@
                          "dishesFoundToast":  "platos encontrados",
                          "uploadFailed":  "Error al subir",
                          "menuScraped":  "Menú extraído",
-                         "scrapeFailed":  "Error al extraer"
+                         "scrapeFailed":  "Error al extraer",
+                         "orders":  "Pedidos",
+                         "newOrder":  "Nuevo pedido",
+                         "noOrders":  "Aún no hay pedidos",
+                         "orderLines":  "línea(s)",
+                         "enterOrder":  "Introducir pedido"
                      },
     "agenda":  {
                    "title":  "Agenda",
@@ -322,5 +328,55 @@
                            "subtitle":  "Visitas pasadas sin informe de visita registrado",
                            "noMissing":  "Todas las visitas tienen informe",
                            "createReport":  "Crear informe"
-                       }
+                       },
+    "orders":  {
+                   "title":  "Pedidos",
+                   "syncNow":  "Sincronizar ahora",
+                   "allStatuses":  "Todos los estados",
+                   "noOrders":  "No se encontraron pedidos",
+                   "client":  "Cliente",
+                   "date":  "Fecha",
+                   "lines":  "Líneas",
+                   "total":  "Total",
+                   "status":  "Estado",
+                   "source":  "Origen",
+                   "offline":  "Sin conexión",
+                   "online":  "En línea",
+                   "statusDraft":  "Borrador",
+                   "statusConfirmed":  "Confirmado",
+                   "statusSentToErp":  "Enviado al ERP",
+                   "statusProcessed":  "Procesado",
+                   "statusSynced":  "Sincronizado",
+                   "deleteTitle":  "Eliminar pedido",
+                   "deleteConfirm":  "¿Seguro que quieres eliminar este borrador?",
+                   "deleted":  "Pedido eliminado"
+               },
+    "orderEntry":  {
+                       "title":  "Nuevo pedido",
+                       "offlineBanner":  "Sin conexión — se sincronizará al restaurar la conexión",
+                       "addProduct":  "Añadir producto",
+                       "searchPlaceholder":  "Buscar por nombre o SKU...",
+                       "orderLines":  "Líneas del pedido",
+                       "noLines":  "Aún no se han añadido productos",
+                       "discount":  "Descuento",
+                       "summary":  "Resumen",
+                       "client":  "Cliente",
+                       "lineCount":  "Nº de líneas",
+                       "subtotal":  "Subtotal",
+                       "total":  "Total",
+                       "notes":  "Notas",
+                       "notesPlaceholder":  "Notas opcionales...",
+                       "saveDraft":  "Guardar borrador",
+                       "confirm":  "Confirmar pedido",
+                       "savedDraft":  "Borrador guardado",
+                       "confirmed":  "Pedido confirmado",
+                       "offlineNote":  "Guardado sin conexión. Se enviará al restaurar la conexión."
+                   },
+    "sync":  {
+                 "successTitle":  "Sincronización completada",
+                 "successDetail":  "{count} pedido(s) enviado(s)",
+                 "failTitle":  "Sincronización parcialmente fallida",
+                 "failDetail":  "{count} pedido(s) no enviado(s)",
+                 "offlineWarning":  "Sin conexión — sincronización no disponible"
+             }
 }

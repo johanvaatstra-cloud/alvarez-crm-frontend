@@ -40,7 +40,8 @@
                 "adminRole":  "Beheerder",
                 "salesRepRole":  "Sales Rep",
                 "reports":  "Rapporten",
-                "missingReports":  "Ontbrekende rapporten"
+                "missingReports":  "Ontbrekende rapporten",
+                "orders":  "Bestellingen"
             },
     "login":  {
                   "title":  "CRM — Verkoopbeheer",
@@ -136,7 +137,12 @@
                          "dishesFoundToast":  "gerechten gevonden",
                          "uploadFailed":  "Upload mislukt",
                          "menuScraped":  "Menu gescrapt",
-                         "scrapeFailed":  "Scrapen mislukt"
+                         "scrapeFailed":  "Scrapen mislukt",
+                         "orders":  "Bestellingen",
+                         "newOrder":  "Nieuwe bestelling",
+                         "noOrders":  "Nog geen bestellingen",
+                         "orderLines":  "regel(s)",
+                         "enterOrder":  "Bestelling invoeren"
                      },
     "agenda":  {
                    "title":  "Agenda",
@@ -322,5 +328,55 @@
                            "subtitle":  "Afgelopen bezoeken zonder bezoekrapport",
                            "noMissing":  "Alle bezoeken hebben een rapport",
                            "createReport":  "Rapport aanmaken"
-                       }
+                       },
+    "orders":  {
+                   "title":  "Bestellingen",
+                   "syncNow":  "Nu synchroniseren",
+                   "allStatuses":  "Alle statussen",
+                   "noOrders":  "Geen bestellingen gevonden",
+                   "client":  "Klant",
+                   "date":  "Datum",
+                   "lines":  "Regels",
+                   "total":  "Totaal",
+                   "status":  "Status",
+                   "source":  "Bron",
+                   "offline":  "Offline",
+                   "online":  "Online",
+                   "statusDraft":  "Concept",
+                   "statusConfirmed":  "Bevestigd",
+                   "statusSentToErp":  "Verstuurd naar ERP",
+                   "statusProcessed":  "Verwerkt",
+                   "statusSynced":  "Gesynchroniseerd",
+                   "deleteTitle":  "Bestelling verwijderen",
+                   "deleteConfirm":  "Weet je zeker dat je deze conceptbestelling wilt verwijderen?",
+                   "deleted":  "Bestelling verwijderd"
+               },
+    "orderEntry":  {
+                       "title":  "Nieuwe bestelling",
+                       "offlineBanner":  "Offline — wordt gesynchroniseerd zodra verbinding hersteld is",
+                       "addProduct":  "Product toevoegen",
+                       "searchPlaceholder":  "Zoek op naam of SKU...",
+                       "orderLines":  "Bestelregels",
+                       "noLines":  "Nog geen producten toegevoegd",
+                       "discount":  "Korting",
+                       "summary":  "Samenvatting",
+                       "client":  "Klant",
+                       "lineCount":  "Aantal regels",
+                       "subtotal":  "Subtotaal",
+                       "total":  "Totaal",
+                       "notes":  "Opmerking",
+                       "notesPlaceholder":  "Optionele opmerkingen bij de bestelling...",
+                       "saveDraft":  "Opslaan als concept",
+                       "confirm":  "Bestelling bevestigen",
+                       "savedDraft":  "Concept opgeslagen",
+                       "confirmed":  "Bestelling bevestigd",
+                       "offlineNote":  "Offline opgeslagen. Wordt verstuurd zodra de verbinding hersteld is."
+                   },
+    "sync":  {
+                 "successTitle":  "Synchronisatie geslaagd",
+                 "successDetail":  "{count} bestelling(en) verstuurd",
+                 "failTitle":  "Synchronisatie deels mislukt",
+                 "failDetail":  "{count} bestelling(en) niet verstuurd",
+                 "offlineWarning":  "Geen verbinding — synchronisatie niet mogelijk"
+             }
 }

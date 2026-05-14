@@ -31,6 +31,10 @@
           <i class="pi pi-exclamation-triangle" />
           <span>{{ t('nav.missingReports') }}</span>
         </RouterLink>
+        <RouterLink to="/orders" class="nav-item" active-class="nav-item--active">
+          <i class="pi pi-shopping-cart" />
+          <span>{{ t('nav.orders') }}</span>
+        </RouterLink>
       </div>
 
       <div v-if="auth.isAdmin" class="nav-section">

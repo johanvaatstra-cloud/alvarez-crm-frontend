@@ -40,7 +40,8 @@
                 "adminRole":  "Administrator",
                 "salesRepRole":  "Sales Rep",
                 "reports":  "Reports",
-                "missingReports":  "Missing reports"
+                "missingReports":  "Missing reports",
+                "orders":  "Orders"
             },
     "login":  {
                   "title":  "CRM — Sales Management",
@@ -136,7 +137,12 @@
                          "dishesFoundToast":  "dishes found",
                          "uploadFailed":  "Upload failed",
                          "menuScraped":  "Menu scraped",
-                         "scrapeFailed":  "Scrape failed"
+                         "scrapeFailed":  "Scrape failed",
+                         "orders":  "Orders",
+                         "newOrder":  "New order",
+                         "noOrders":  "No orders yet",
+                         "orderLines":  "line(s)",
+                         "enterOrder":  "Enter order"
                      },
     "agenda":  {
                    "title":  "Agenda",
@@ -322,5 +328,55 @@
                            "subtitle":  "Past visits with no visit report recorded",
                            "noMissing":  "All visits have a report",
                            "createReport":  "Create report"
-                       }
+                       },
+    "orders":  {
+                   "title":  "Orders",
+                   "syncNow":  "Sync now",
+                   "allStatuses":  "All statuses",
+                   "noOrders":  "No orders found",
+                   "client":  "Client",
+                   "date":  "Date",
+                   "lines":  "Lines",
+                   "total":  "Total",
+                   "status":  "Status",
+                   "source":  "Source",
+                   "offline":  "Offline",
+                   "online":  "Online",
+                   "statusDraft":  "Draft",
+                   "statusConfirmed":  "Confirmed",
+                   "statusSentToErp":  "Sent to ERP",
+                   "statusProcessed":  "Processed",
+                   "statusSynced":  "Synced",
+                   "deleteTitle":  "Delete order",
+                   "deleteConfirm":  "Are you sure you want to delete this draft order?",
+                   "deleted":  "Order deleted"
+               },
+    "orderEntry":  {
+                       "title":  "New order",
+                       "offlineBanner":  "Offline — will sync when connection is restored",
+                       "addProduct":  "Add product",
+                       "searchPlaceholder":  "Search by name or SKU...",
+                       "orderLines":  "Order lines",
+                       "noLines":  "No products added yet",
+                       "discount":  "Discount",
+                       "summary":  "Summary",
+                       "client":  "Client",
+                       "lineCount":  "Line count",
+                       "subtotal":  "Subtotal",
+                       "total":  "Total",
+                       "notes":  "Notes",
+                       "notesPlaceholder":  "Optional notes...",
+                       "saveDraft":  "Save as draft",
+                       "confirm":  "Confirm order",
+                       "savedDraft":  "Draft saved",
+                       "confirmed":  "Order confirmed",
+                       "offlineNote":  "Saved offline. Will be sent when connection is restored."
+                   },
+    "sync":  {
+                 "successTitle":  "Sync successful",
+                 "successDetail":  "{count} order(s) sent",
+                 "failTitle":  "Sync partially failed",
+                 "failDetail":  "{count} order(s) not sent",
+                 "offlineWarning":  "Offline — sync not available"
+             }
 }
