@@ -202,12 +202,12 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
 .page-header h1 {
   font-size: 24px;
   font-weight: 700;
-  color: #1b4332;
+  color: var(--accent);
   margin: 0 0 4px;
 }
 
 .subtitle {
-  color: #6c757d;
+  color: var(--text-2);
   margin: 0;
   font-size: 14px;
 }
@@ -221,36 +221,40 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
 }
 
 .stat-card {
-  background: white;
-  border-radius: 12px;
+  background: var(--card);
+  border-radius: 14px;
+  border-top: 1px solid var(--card-top);
+  border-left: 1px solid var(--card-left);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 20px;
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .stat-icon-wrap {
   width: 48px;
   height: 48px;
   border-radius: 10px;
-  background: #e8f5ee;
+  background: var(--accent-dim);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   font-size: 20px;
-  color: #2d6a4f;
+  color: var(--accent);
 }
 
 .stat-icon-wrap.warn {
-  background: #fff3cd;
-  color: #b45309;
+  background: rgba(251, 191, 36, 0.15);
+  color: #f59e0b;
 }
 
 .stat-icon-wrap.accent {
-  background: #ede9fe;
-  color: #6d28d9;
+  background: rgba(139, 92, 246, 0.15);
+  color: #8b5cf6;
 }
 
 .stat-body {
@@ -261,13 +265,13 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
 .stat-value {
   font-size: 26px;
   font-weight: 700;
-  color: #1b4332;
+  color: var(--text);
   line-height: 1;
 }
 
 .stat-label {
   font-size: 12px;
-  color: #6c757d;
+  color: var(--text-2);
   margin-top: 4px;
 }
 
@@ -283,10 +287,14 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
 }
 
 .panel {
-  background: white;
-  border-radius: 12px;
+  background: var(--card);
+  border-radius: 14px;
+  border-top: 1px solid var(--card-top);
+  border-left: 1px solid var(--card-left);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .panel-header {
@@ -295,11 +303,11 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
   gap: 8px;
   margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #f1f3f5;
+  border-bottom: 1px solid var(--divider);
 }
 
 .panel-header i {
-  color: #2d6a4f;
+  color: var(--accent);
   font-size: 15px;
 }
 
@@ -308,14 +316,14 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: var(--text-2);
   margin: 0;
 }
 
 .panel-loading,
 .panel-empty {
   font-size: 13px;
-  color: #adb5bd;
+  color: var(--text-3);
   text-align: center;
   padding: 24px 0;
 }
@@ -333,13 +341,13 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
   gap: 12px;
   padding: 10px 12px;
   border-radius: 8px;
-  background: #f8f9fa;
+  background: var(--row-hover);
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .visit-item:hover {
-  background: #e9f5ee;
+  background: var(--accent-dim);
 }
 
 .visit-date-col {
@@ -352,12 +360,12 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
 .visit-day {
   font-size: 12px;
   font-weight: 700;
-  color: #2d6a4f;
+  color: var(--accent);
 }
 
 .visit-time {
   font-size: 11px;
-  color: #868e96;
+  color: var(--text-3);
 }
 
 .visit-body {
@@ -370,7 +378,7 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
 .visit-client {
   font-size: 13px;
   font-weight: 600;
-  color: #212529;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -378,7 +386,7 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
 
 .visit-purpose {
   font-size: 12px;
-  color: #6c757d;
+  color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -386,7 +394,7 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
 
 .visit-dur {
   font-size: 11px;
-  color: #adb5bd;
+  color: var(--text-3);
   flex-shrink: 0;
 }
 
@@ -404,13 +412,13 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
   gap: 12px;
   padding: 10px 12px;
   border-radius: 8px;
-  background: #f8f9fa;
+  background: var(--row-hover);
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .report-item:hover {
-  background: #e9f5ee;
+  background: var(--accent-dim);
 }
 
 .report-left {
@@ -421,7 +429,7 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
 .report-client {
   font-size: 13px;
   font-weight: 600;
-  color: #212529;
+  color: var(--text);
   display: block;
 }
 
@@ -434,7 +442,7 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
 
 .report-date {
   font-size: 11px;
-  color: #868e96;
+  color: var(--text-3);
 }
 
 .report-rep {
@@ -454,7 +462,7 @@ onMounted(() => { loadStats(); loadUpcoming(); loadRecentReports() })
 
 .report-summary {
   font-size: 12px;
-  color: #6c757d;
+  color: var(--text-2);
   margin: 4px 0 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;

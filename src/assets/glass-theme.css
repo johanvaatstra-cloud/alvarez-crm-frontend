@@ -1,0 +1,162 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   glass-theme.css  –  Alvarez CRM global glass design system
+   The composable src/composables/useTheme.js adds 'theme-dark' or 'theme-light'
+   to <html>. All CSS custom properties cascade from there to every component.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Dark theme ──────────────────────────────────────────────────────────── */
+html.theme-dark {
+  /* Glass card surfaces */
+  --card:             rgba(255, 255, 255, 0.07);
+  --card-top:         rgba(255, 255, 255, 0.22);
+  --card-left:        rgba(255, 255, 255, 0.14);
+  --divider:          rgba(255, 255, 255, 0.08);
+
+  /* Accent (green) */
+  --accent:           #4ade80;
+  --accent-dim:       rgba(74, 222, 128, 0.15);
+
+  /* Typography */
+  --text:             rgba(255, 255, 255, 0.92);
+  --text-2:           rgba(255, 255, 255, 0.55);
+  --text-3:           rgba(255, 255, 255, 0.32);
+
+  /* Table / list rows */
+  --row-hover:        rgba(255, 255, 255, 0.05);
+  --row-border:       rgba(255, 255, 255, 0.06);
+  --th-bg:            rgba(255, 255, 255, 0.04);
+
+  /* Form inputs */
+  --input-bg:         rgba(255, 255, 255, 0.08);
+  --input-border:     rgba(255, 255, 255, 0.15);
+
+  /* Status badges */
+  --badge-offline-bg:  rgba(251, 146, 60, 0.2);
+  --badge-offline-txt: #fb923c;
+  --badge-online-bg:   rgba(74, 222, 128, 0.15);
+  --badge-online-txt:  #4ade80;
+
+  /* Elevation */
+  --shadow:           0 4px 24px rgba(0, 0, 0, 0.40);
+  --shadow-sm:        0 2px 8px  rgba(0, 0, 0, 0.30);
+
+  color-scheme: dark;
+}
+
+/* ── Light theme ─────────────────────────────────────────────────────────── */
+html.theme-light {
+  /* Glass card surfaces */
+  --card:             rgba(255, 255, 255, 0.68);
+  --card-top:         rgba(255, 255, 255, 0.97);
+  --card-left:        rgba(255, 255, 255, 0.85);
+  --divider:          rgba(0, 0, 0, 0.07);
+
+  /* Accent (green) */
+  --accent:           #2d6a4f;
+  --accent-dim:       rgba(45, 106, 79, 0.10);
+
+  /* Typography */
+  --text:             #1a2e1a;
+  --text-2:           #495057;
+  --text-3:           #9ca3af;
+
+  /* Table / list rows */
+  --row-hover:        rgba(45, 106, 79, 0.06);
+  --row-border:       rgba(0, 0, 0, 0.05);
+  --th-bg:            rgba(248, 250, 248, 0.90);
+
+  /* Form inputs */
+  --input-bg:         rgba(255, 255, 255, 0.80);
+  --input-border:     rgba(0, 0, 0, 0.15);
+
+  /* Status badges */
+  --badge-offline-bg:  #fff3e0;
+  --badge-offline-txt: #e65100;
+  --badge-online-bg:   #e8f5e9;
+  --badge-online-txt:  #2e7d32;
+
+  /* Elevation */
+  --shadow:           0 4px 24px rgba(0, 0, 0, 0.10);
+  --shadow-sm:        0 2px 8px  rgba(0, 0, 0, 0.06);
+
+  color-scheme: light;
+}
+
+/* ── Page background (body level) ────────────────────────────────────────── */
+html.theme-dark body {
+  background: #0f1923;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+html.theme-light body {
+  background: linear-gradient(135deg, #e8f5ee 0%, #f0f4ff 100%);
+  background-attachment: fixed;
+  color: #1a2e1a;
+}
+
+/* ── Shared glass card utility class ─────────────────────────────────────── */
+/* Add class="glass-card" to any element for instant glass treatment */
+.glass-card {
+  background:              var(--card);
+  border-radius:           14px;
+  border-top:              1px solid var(--card-top);
+  border-left:             1px solid var(--card-left);
+  border-right:            none;
+  border-bottom:           none;
+  backdrop-filter:         blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow:              var(--shadow-sm);
+}
+
+/* ── PrimeVue Dialog glass override ─────────────────────────────────────── */
+html.theme-dark .p-dialog {
+  background: rgba(15, 25, 35, 0.92) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.10) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+html.theme-dark .p-dialog .p-dialog-header {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html.theme-dark .p-dialog .p-dialog-content {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+html.theme-dark .p-dialog .p-dialog-footer {
+  background: transparent !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ── PrimeVue Select dropdown dark ──────────────────────────────────────── */
+html.theme-dark .p-select,
+html.theme-dark .p-inputtext {
+  background: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  color: var(--text) !important;
+}
+
+html.theme-dark .p-select-overlay,
+html.theme-dark .p-autocomplete-overlay {
+  background: rgba(15, 25, 35, 0.96) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(16px);
+}
+
+html.theme-dark .p-select-option:hover,
+html.theme-dark .p-select-option.p-select-option-selected {
+  background: rgba(74, 222, 128, 0.15) !important;
+  color: #4ade80 !important;
+}
+
+html.theme-dark .p-textarea {
+  background: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  color: var(--text) !important;
+}

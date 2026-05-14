@@ -9,9 +9,13 @@ import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
 import { initSyncService } from './services/syncService.js'
+import { useTheme } from './composables/useTheme.js'
 
-const { t }  = useI18n()
-const toast  = useToast()
+const { t }   = useI18n()
+const toast   = useToast()
+
+// Initialize global theme (applies class to <html> immediately)
+useTheme()
 
 onMounted(() => {
   initSyncService(toast, t)
@@ -27,9 +31,8 @@ onMounted(() => {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #f8f9fa;
-  color: #212529;
   line-height: 1.5;
+  transition: background 0.3s, color 0.3s;
 }
 
 :root {

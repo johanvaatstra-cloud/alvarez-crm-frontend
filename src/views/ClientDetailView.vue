@@ -484,6 +484,7 @@ import VisitFormDialog from '../components/VisitFormDialog.vue'
 import ReportFormDialog from '../components/ReportFormDialog.vue'
 import { useAuthStore } from '../stores/auth'
 import { cacheClients } from '../services/offlineClientCache.js'
+import { useTheme } from '../composables/useTheme.js'
 
 const { t, locale } = useI18n()
 const route  = useRoute()
@@ -495,12 +496,7 @@ const DFNS_LOCALES = { nl, en: enGB, es, ca }
 const dateFnsLocale = computed(() => DFNS_LOCALES[locale.value] ?? nl)
 
 // ── Thema ─────────────────────────────────────────────────────────────────────
-const isDark = ref(localStorage.getItem('crm_theme') !== 'light')
-
-function toggleTheme() {
-  isDark.value = !isDark.value
-  localStorage.setItem('crm_theme', isDark.value ? 'dark' : 'light')
-}
+const { isDark, toggleTheme } = useTheme()
 
 // ── State ─────────────────────────────────────────────────────────────────────
 const client  = ref(null)

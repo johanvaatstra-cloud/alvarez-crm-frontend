@@ -5,6 +5,7 @@ import Aura from '@primevue/themes/aura'
 import ToastService from 'primevue/toastservice'
 import Tooltip from 'primevue/tooltip'
 import 'primeicons/primeicons.css'
+import './assets/glass-theme.css'
 
 import router from './router'
 import App from './App.vue'
@@ -19,7 +20,7 @@ app.use(PrimeVue, {
     preset: Aura,
     options: {
       prefix: 'p',
-      darkModeSelector: '.dark-mode',
+      darkModeSelector: '.theme-dark',
       cssLayer: false
     }
   }

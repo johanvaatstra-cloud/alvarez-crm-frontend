@@ -293,12 +293,12 @@ async function handleSync() {
   align-items: center;
   margin-bottom: 20px;
 }
-.page-header h1 { margin: 0; font-size: 22px; color: #1a2e1a; }
+.page-header h1 { margin: 0; font-size: 22px; color: var(--accent); }
 
 .offline-banner {
-  background: #fff3e0;
-  border: 1px solid #ffb74d;
-  color: #e65100;
+  background: var(--badge-offline-bg);
+  border: 1px solid var(--badge-offline-txt);
+  color: var(--badge-offline-txt);
   border-radius: 8px;
   padding: 10px 16px;
   margin-bottom: 16px;
@@ -309,10 +309,14 @@ async function handleSync() {
 }
 
 .card {
-  background: white;
-  border-radius: 12px;
+  background: var(--card);
+  border-radius: 14px;
+  border-top: 1px solid var(--card-top);
+  border-left: 1px solid var(--card-left);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 16px 20px;
-  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 16px;
 }
 
@@ -322,13 +326,13 @@ async function handleSync() {
 .loading-state {
   text-align: center;
   padding: 40px;
-  color: #888;
+  color: var(--text-3);
 }
 
 .empty-state {
   text-align: center;
   padding: 48px 24px;
-  color: #aaa;
+  color: var(--text-3);
 }
 .empty-state i { font-size: 36px; margin-bottom: 12px; display: block; }
 .empty-state p { margin: 0; font-size: 15px; }
@@ -342,33 +346,34 @@ async function handleSync() {
 }
 
 .orders-table th {
-  background: #f8faf8;
+  background: var(--th-bg);
   padding: 12px 16px;
   text-align: left;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .5px;
-  color: #666;
-  border-bottom: 1px solid #eee;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--divider);
 }
 
 .orders-table td {
   padding: 12px 16px;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--row-border);
   vertical-align: middle;
+  color: var(--text);
 }
 
 .order-row {
   cursor: pointer;
   transition: background .15s;
 }
-.order-row:hover { background: #f8faf8; }
+.order-row:hover td { background: var(--row-hover); }
 .order-row:last-child td { border-bottom: none; }
 
-.td-client { font-weight: 500; color: #1a2e1a; }
-.td-date   { color: #666; white-space: nowrap; }
-.td-total  { font-weight: 600; color: #2d6a4f; white-space: nowrap; }
+.td-client { font-weight: 500; color: var(--text); }
+.td-date   { color: var(--text-2); white-space: nowrap; }
+.td-total  { font-weight: 600; color: var(--accent); white-space: nowrap; }
 
 .td-source { white-space: nowrap; }
 
@@ -382,13 +387,13 @@ async function handleSync() {
 }
 
 .offline-badge {
-  background: #fff3e0;
-  color: #e65100;
+  background: var(--badge-offline-bg);
+  color: var(--badge-offline-txt);
 }
 
 .online-badge {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--badge-online-bg);
+  color: var(--badge-online-txt);
 }
 
 .td-actions {
@@ -399,7 +404,7 @@ async function handleSync() {
 }
 
 .row-arrow {
-  color: #ccc;
+  color: var(--text-3);
   font-size: 12px;
   margin-left: 4px;
 }

@@ -41,7 +41,9 @@
                 "salesRepRole":  "Sales Rep",
                 "reports":  "Rapporten",
                 "missingReports":  "Ontbrekende rapporten",
-                "orders":  "Bestellingen"
+                "orders":  "Bestellingen",
+                "darkMode":  "Donker thema",
+                "lightMode":  "Licht thema"
             },
     "login":  {
                   "title":  "CRM — Verkoopbeheer",

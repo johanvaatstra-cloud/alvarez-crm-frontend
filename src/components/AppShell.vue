@@ -67,6 +67,13 @@
             <span class="user-role">{{ auth.isAdmin ? t('nav.adminRole') : t('nav.salesRepRole') }}</span>
           </div>
         </div>
+        <button
+          class="sidebar-icon-btn"
+          @click="toggleTheme"
+          :title="isDark ? t('nav.lightMode') : t('nav.darkMode')"
+        >
+          <i :class="isDark ? 'pi pi-sun' : 'pi pi-moon'" />
+        </button>
         <button class="logout-btn" @click="handleLogout" :title="t('nav.logout')">
           <i class="pi pi-sign-out" />
         </button>
@@ -85,10 +92,12 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
+import { useTheme } from '../composables/useTheme.js'
 
 const { t } = useI18n()
 const auth = useAuthStore()
 const router = useRouter()
+const { isDark, toggleTheme } = useTheme()
 
 const initials = computed(() => {
   const name = auth.fullName || ''
@@ -111,7 +120,10 @@ function handleLogout() {
 .sidebar {
   width: 240px;
   flex-shrink: 0;
-  background: var(--green-dark);
+  background: rgba(10, 20, 30, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -133,8 +145,8 @@ function handleLogout() {
 .logo-mark {
   width: 40px;
   height: 40px;
-  background: var(--green-light);
-  color: white;
+  background: #4ade80;
+  color: #0f1923;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 700;
@@ -196,8 +208,10 @@ function handleLogout() {
 }
 
 .nav-item--active {
-  background: var(--green-light);
-  color: white !important;
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80 !important;
+  border-left: 2px solid #4ade80;
+  padding-left: 10px;
 }
 
 .nav-item i {
@@ -228,8 +242,8 @@ function handleLogout() {
 .user-avatar {
   width: 32px;
   height: 32px;
-  background: var(--green-light);
-  color: white;
+  background: #4ade80;
+  color: #0f1923;
   border-radius: 50%;
   font-size: 12px;
   font-weight: 600;
@@ -237,6 +251,22 @@ function handleLogout() {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.sidebar-icon-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.sidebar-icon-btn:hover {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
 }
 
 .user-details {
@@ -280,6 +310,6 @@ function handleLogout() {
   margin-left: 240px;
   flex: 1;
   min-height: 100vh;
-  background: #f1f5f2;
+  background: transparent;
 }
 </style>

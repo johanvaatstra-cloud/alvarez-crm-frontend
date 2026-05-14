@@ -41,7 +41,9 @@
                 "salesRepRole":  "Sales Rep",
                 "reports":  "Reports",
                 "missingReports":  "Missing reports",
-                "orders":  "Orders"
+                "orders":  "Orders",
+                "darkMode":  "Dark theme",
+                "lightMode":  "Light theme"
             },
     "login":  {
                   "title":  "CRM — Sales Management",

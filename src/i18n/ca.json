@@ -41,7 +41,9 @@
                 "salesRepRole":  "Comercial",
                 "reports":  "Informes",
                 "missingReports":  "Informes pendents",
-                "orders":  "Comandes"
+                "orders":  "Comandes",
+                "darkMode":  "Tema fosc",
+                "lightMode":  "Tema clar"
             },
     "login":  {
                   "title":  "CRM — Gestió de vendes",

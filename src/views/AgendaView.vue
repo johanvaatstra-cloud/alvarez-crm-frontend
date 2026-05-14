@@ -303,12 +303,12 @@ onMounted(load)
 .page-header h1 {
   font-size: 24px;
   font-weight: 700;
-  color: #1b4332;
+  color: var(--accent);
   margin: 0 0 4px;
 }
 
 .subtitle {
-  color: #6c757d;
+  color: var(--text-2);
   margin: 0;
   font-size: 14px;
 }
@@ -319,17 +319,21 @@ onMounted(load)
   align-items: center;
   gap: 8px;
   margin-bottom: 20px;
-  background: white;
-  border-radius: 10px;
+  background: var(--card);
+  border-radius: 12px;
+  border-top: 1px solid var(--card-top);
+  border-left: 1px solid var(--card-left);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 12px 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+  box-shadow: var(--shadow-sm);
   flex-wrap: wrap;
 }
 
 .week-label {
   font-size: 15px;
   font-weight: 600;
-  color: #212529;
+  color: var(--text);
   min-width: 220px;
   text-align: center;
 }
@@ -354,7 +358,7 @@ onMounted(load)
   border: 1px solid;
   font-size: 12px;
   font-weight: 500;
-  color: #212529;
+  color: var(--text);
 }
 
 .rep-dot {
@@ -384,22 +388,26 @@ onMounted(load)
 }
 
 .day-col {
-  background: white;
-  border-radius: 10px;
+  background: var(--card);
+  border-radius: 12px;
+  border-top: 1px solid var(--card-top);
+  border-left: 1px solid var(--card-left);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+  box-shadow: var(--shadow-sm);
   min-height: 200px;
   display: flex;
   flex-direction: column;
 }
 
 .day-col.today {
-  box-shadow: 0 0 0 2px #2d6a4f, 0 1px 3px rgba(0, 0, 0, 0.07);
+  box-shadow: 0 0 0 2px var(--accent), var(--shadow-sm);
 }
 
 .day-header {
   padding: 10px 12px 8px;
-  border-bottom: 1px solid #f1f3f5;
+  border-bottom: 1px solid var(--divider);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -410,13 +418,13 @@ onMounted(load)
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: var(--text-2);
 }
 
 .day-num {
   font-size: 18px;
   font-weight: 700;
-  color: #212529;
+  color: var(--text);
   line-height: 1;
   width: 30px;
   height: 30px;
@@ -427,8 +435,8 @@ onMounted(load)
 }
 
 .day-num.today {
-  background: #2d6a4f;
-  color: white;
+  background: var(--accent);
+  color: #0f1923;
 }
 
 .day-body {
@@ -444,7 +452,7 @@ onMounted(load)
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #dee2e6;
+  color: var(--text-3);
   font-size: 20px;
 }
 
@@ -454,47 +462,46 @@ onMounted(load)
   padding: 8px 10px;
   cursor: pointer;
   border-left: 3px solid transparent;
-  background: #f8f9fa;
+  background: var(--row-hover);
   transition: box-shadow 0.15s, transform 0.1s;
 }
 
 .visit-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   transform: translateY(-1px);
 }
 
 .visit-card.status-scheduled {
-  border-left-color: #339af0;
-  background: #e7f5ff;
+  border-left-color: #60a5fa;
+  background: rgba(96, 165, 250, 0.12);
 }
 
 .visit-card.status-completed {
-  border-left-color: #40c057;
-  background: #ebfbee;
+  border-left-color: var(--accent);
+  background: var(--accent-dim);
 }
 
 .visit-card.status-cancelled {
-  border-left-color: #adb5bd;
-  background: #f8f9fa;
-  opacity: 0.7;
+  border-left-color: rgba(156, 163, 175, 0.5);
+  opacity: 0.65;
 }
 
 .visit-card.status-noshow {
-  border-left-color: #fd7e14;
-  background: #fff4e6;
+  border-left-color: #f97316;
+  background: rgba(249, 115, 22, 0.12);
 }
 
 .visit-time {
   font-size: 11px;
   font-weight: 700;
-  color: #495057;
+  color: var(--text-2);
   margin-bottom: 2px;
 }
 
 .visit-rep {
   font-size: 10px;
   font-weight: 600;
-  color: #868e96;
+  color: var(--text-3);
   text-transform: uppercase;
   letter-spacing: 0.3px;
   margin-bottom: 2px;
@@ -503,7 +510,7 @@ onMounted(load)
 .visit-client {
   font-size: 13px;
   font-weight: 600;
-  color: #212529;
+  color: var(--text);
   margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -512,7 +519,7 @@ onMounted(load)
 
 .visit-purpose {
   font-size: 11px;
-  color: #6c757d;
+  color: var(--text-2);
   margin-bottom: 6px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -529,7 +536,7 @@ onMounted(load)
 
 .visit-dur {
   font-size: 10px;
-  color: #868e96;
+  color: var(--text-3);
 }
 
 .visit-tag {
@@ -545,7 +552,7 @@ onMounted(load)
 
 .skeleton-card {
   height: 80px;
-  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
+  background: linear-gradient(90deg, var(--row-hover) 25%, var(--divider) 50%, var(--row-hover) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 8px;
@@ -573,14 +580,14 @@ onMounted(load)
 .detail-label {
   font-size: 13px;
   font-weight: 500;
-  color: #868e96;
+  color: var(--text-3);
   min-width: 110px;
   flex-shrink: 0;
 }
 
 .detail-value {
   font-size: 14px;
-  color: #212529;
+  color: var(--text);
 }
 
 .detail-purpose .detail-value {

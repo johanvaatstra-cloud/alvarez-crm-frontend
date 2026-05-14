@@ -154,12 +154,12 @@ onMounted(load)
 .page-header h1 {
   font-size: 24px;
   font-weight: 700;
-  color: #1b4332;
+  color: var(--accent);
   margin: 0 0 4px;
 }
 
 .subtitle {
-  color: #6c757d;
+  color: var(--text-2);
   font-size: 14px;
   margin: 0;
 }
@@ -175,41 +175,60 @@ onMounted(load)
 
 .search-field :deep(.p-inputtext) {
   width: 100%;
+  background: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  color: var(--text) !important;
 }
 
 .card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: var(--card);
+  border-radius: 14px;
+  border-top: 1px solid var(--card-top);
+  border-left: 1px solid var(--card-left);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
 .card :deep(.p-datatable-header) {
-  background: white;
+  background: transparent;
   border: none;
 }
 
 .card :deep(.p-datatable-thead > tr > th) {
-  background: #f8f9fa;
-  color: #6c757d;
+  background: var(--th-bg);
+  color: var(--text-2);
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-color: #e9ecef;
+  border-color: var(--divider);
+}
+
+.card :deep(.p-datatable-tbody > tr > td) {
+  border-color: var(--row-border);
+  color: var(--text);
 }
 
 .card :deep(.p-datatable-tbody > tr) {
   cursor: pointer;
+  background: transparent;
 }
 
 .card :deep(.p-datatable-tbody > tr:hover > td) {
-  background: #f1f5f2;
+  background: var(--row-hover);
+}
+
+.card :deep(.p-paginator) {
+  background: transparent;
+  border-color: var(--divider);
+  color: var(--text-2);
 }
 
 .empty-state {
   text-align: center;
   padding: 48px;
-  color: #adb5bd;
+  color: var(--text-3);
 }
 
 .empty-state i {

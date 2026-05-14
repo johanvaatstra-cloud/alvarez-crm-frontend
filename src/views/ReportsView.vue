@@ -156,7 +156,7 @@ onMounted(() => { loadReps(); loadReports() })
 .page-header h1 {
   font-size: 24px;
   font-weight: 700;
-  color: #1b4332;
+  color: var(--accent);
   margin: 0;
 }
 
@@ -168,9 +168,13 @@ onMounted(() => { loadReps(); loadReports() })
   flex-wrap: wrap;
   margin-bottom: 24px;
   padding: 16px 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: var(--card);
+  border-radius: 14px;
+  border-top: 1px solid var(--card-top);
+  border-left: 1px solid var(--card-left);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-sm);
 }
 
 .filter-group {
@@ -182,7 +186,7 @@ onMounted(() => { loadReps(); loadReports() })
 .filter-group label {
   font-size: 11px;
   font-weight: 600;
-  color: #6c757d;
+  color: var(--text-2);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -190,20 +194,19 @@ onMounted(() => { loadReps(); loadReports() })
 .date-input,
 .rep-select {
   height: 36px;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--input-border);
   border-radius: 8px;
   padding: 0 10px;
   font-size: 13px;
-  color: #212529;
-  background: #f8f9fa;
+  color: var(--text);
+  background: var(--input-bg);
   outline: none;
   transition: border-color 0.15s;
 }
 
 .date-input:focus,
 .rep-select:focus {
-  border-color: #2d6a4f;
-  background: white;
+  border-color: var(--accent);
 }
 
 .rep-select { min-width: 160px; }
@@ -211,11 +214,11 @@ onMounted(() => { loadReps(); loadReports() })
 .btn-clear {
   height: 36px;
   padding: 0 12px;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--divider);
   border-radius: 8px;
-  background: white;
+  background: var(--row-hover);
   font-size: 12px;
-  color: #6c757d;
+  color: var(--text-2);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -225,9 +228,9 @@ onMounted(() => { loadReps(); loadReports() })
 }
 
 .btn-clear:hover {
-  background: #f8d7da;
-  color: #842029;
-  border-color: #f5c6cb;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 /* ── States ──────────────────────────────────────────────────────────────── */
@@ -239,7 +242,7 @@ onMounted(() => { loadReps(); loadReports() })
   justify-content: center;
   gap: 12px;
   padding: 60px 0;
-  color: #adb5bd;
+  color: var(--text-3);
   font-size: 14px;
 }
 
@@ -249,9 +252,13 @@ onMounted(() => { loadReps(); loadReports() })
 
 /* ── Table ───────────────────────────────────────────────────────────────── */
 .report-table {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: var(--card);
+  border-radius: 14px;
+  border-top: 1px solid var(--card-top);
+  border-left: 1px solid var(--card-left);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
@@ -259,11 +266,11 @@ onMounted(() => { loadReps(); loadReports() })
   display: grid;
   grid-template-columns: 1fr 160px 110px 130px 32px;
   padding: 10px 16px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
+  background: var(--th-bg);
+  border-bottom: 1px solid var(--divider);
   font-size: 11px;
   font-weight: 600;
-  color: #6c757d;
+  color: var(--text-2);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -277,7 +284,7 @@ onMounted(() => { loadReps(); loadReports() })
   grid-template-columns: 1fr 160px 110px 130px 32px;
   align-items: center;
   padding: 12px 16px;
-  border-bottom: 1px solid #f1f3f5;
+  border-bottom: 1px solid var(--row-border);
   cursor: pointer;
   transition: background 0.15s;
 }
@@ -287,13 +294,13 @@ onMounted(() => { loadReps(); loadReports() })
 }
 
 .table-row:hover {
-  background: #e9f5ee;
+  background: var(--row-hover);
 }
 
 .cell-client {
   font-size: 13px;
   font-weight: 600;
-  color: #212529;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -316,7 +323,7 @@ onMounted(() => { loadReps(); loadReports() })
 
 .cell-date {
   font-size: 12px;
-  color: #495057;
+  color: var(--text-2);
 }
 
 .cell-status {
@@ -324,7 +331,7 @@ onMounted(() => { loadReps(); loadReports() })
 }
 
 .cell-arrow {
-  color: #adb5bd;
+  color: var(--text-3);
   font-size: 12px;
   text-align: right;
 }

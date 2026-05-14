@@ -419,8 +419,8 @@ onUnmounted(stopPolling)
 }
 
 .back-btn {
-  background: white;
-  border: 1px solid #dee2e6;
+  background: var(--card);
+  border: 1px solid var(--card-top);
   border-radius: 8px;
   width: 36px;
   height: 36px;
@@ -428,16 +428,17 @@ onUnmounted(stopPolling)
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #495057;
+  color: var(--text-2);
   transition: background 0.15s;
   flex-shrink: 0;
+  backdrop-filter: blur(10px);
 }
-.back-btn:hover { background: #f1f5f2; }
+.back-btn:hover { background: var(--row-hover); color: var(--text); }
 
 .page-header h1 {
   font-size: 20px;
   font-weight: 700;
-  color: #1b4332;
+  color: var(--accent);
   margin: 0 0 6px;
 }
 
@@ -449,21 +450,21 @@ onUnmounted(stopPolling)
 
 .client-name {
   font-size: 14px;
-  color: #495057;
+  color: var(--text-2);
   font-weight: 500;
 }
 
 .skeleton-title {
   height: 28px;
   width: 240px;
-  background: #e9ecef;
+  background: var(--row-hover);
   border-radius: 6px;
   animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  50% { opacity: 0.4; }
 }
 
 .report-grid {
@@ -478,10 +479,14 @@ onUnmounted(stopPolling)
 }
 
 .card {
-  background: white;
-  border-radius: 12px;
+  background: var(--card);
+  border-radius: 14px;
+  border-top: 1px solid var(--card-top);
+  border-left: 1px solid var(--card-left);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 16px;
 }
 
@@ -497,13 +502,13 @@ onUnmounted(stopPolling)
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: var(--text-2);
   margin: 0;
   flex: 1;
 }
 
 .card-header .pi {
-  color: #2d6a4f;
+  color: var(--accent);
   font-size: 15px;
 }
 
@@ -530,7 +535,7 @@ onUnmounted(stopPolling)
 .summary-text {
   font-size: 14px;
   line-height: 1.7;
-  color: #212529;
+  color: var(--text);
   margin: 0;
   white-space: pre-wrap;
 }
@@ -538,9 +543,9 @@ onUnmounted(stopPolling)
 .transcript-text {
   font-size: 13px;
   line-height: 1.7;
-  color: #495057;
+  color: var(--text-2);
   margin: 0;
-  background: #f8f9fa;
+  background: var(--row-hover);
   border-radius: 8px;
   padding: 12px;
   white-space: pre-wrap;
@@ -550,11 +555,11 @@ onUnmounted(stopPolling)
 
 .processing-card {
   text-align: center;
-  color: #339af0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  color: #60a5fa;
 }
 
 .processing-card > .pi {
@@ -565,13 +570,13 @@ onUnmounted(stopPolling)
   margin: 0;
   font-size: 15px;
   font-weight: 600;
-  color: #1c7ed6;
+  color: #60a5fa;
 }
 
 .processing-hint {
   margin: 0;
   font-size: 13px;
-  color: #74c0fc;
+  color: #93c5fd;
 }
 
 .check-btn {
@@ -581,7 +586,7 @@ onUnmounted(stopPolling)
 
 .error-card {
   text-align: center;
-  color: #fa5252;
+  color: #f87171;
 }
 
 .error-card .pi {
@@ -603,11 +608,11 @@ onUnmounted(stopPolling)
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #e7f5ff;
+  background: rgba(96, 165, 250, 0.15);
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 13px;
-  color: #1c7ed6;
+  color: #60a5fa;
 }
 
 .upload-btn {
@@ -626,19 +631,19 @@ onUnmounted(stopPolling)
   gap: 10px;
   padding: 12px 0;
   font-size: 13px;
-  color: #6c757d;
+  color: var(--text-2);
 }
 
 .empty-lines {
   font-size: 13px;
-  color: #adb5bd;
+  color: var(--text-3);
   text-align: center;
   padding: 16px;
 }
 
 .empty-hint {
   font-size: 12px;
-  color: #ced4da;
+  color: var(--text-3);
   text-align: center;
   padding: 8px 0 4px;
 }
@@ -649,7 +654,7 @@ onUnmounted(stopPolling)
   gap: 8px;
   margin-bottom: 10px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #f1f3f5;
+  border-bottom: 1px solid var(--divider);
 }
 
 .order-line:last-of-type {
@@ -672,12 +677,12 @@ onUnmounted(stopPolling)
 .raw-label {
   font-size: 13px;
   font-weight: 600;
-  color: #212529;
+  color: var(--text);
 }
 
 .raw-qty {
   font-size: 12px;
-  color: #6c757d;
+  color: var(--text-2);
 }
 
 .line-product-select {
@@ -687,7 +692,8 @@ onUnmounted(stopPolling)
 .save-lines-btn {
   width: 100%;
   margin-top: 8px;
-  background: #2d6a4f !important;
-  border-color: #2d6a4f !important;
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #0f1923 !important;
 }
 </style>
