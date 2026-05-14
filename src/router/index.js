@@ -12,6 +12,7 @@ const routes = [
       { path: 'clients', component: () => import('../views/ClientsView.vue') },
       { path: 'clients/:id', component: () => import('../views/ClientDetailView.vue') },
       { path: 'clients/:clientId/order/new', component: () => import('../views/OrderEntryView.vue') },
+      { path: 'clients/:clientId/menu', component: () => import('../views/ClientMenuView.vue'), meta: { adminOnly: true } },
       { path: 'orders', component: () => import('../views/OrdersView.vue') },
       { path: 'agenda', component: () => import('../views/AgendaView.vue') },
       { path: 'reports', component: () => import('../views/ReportsView.vue') },

@@ -5,6 +5,7 @@ import Aura from '@primevue/themes/aura'
 import ToastService from 'primevue/toastservice'
 import Tooltip from 'primevue/tooltip'
 import 'primeicons/primeicons.css'
+import '@tabler/icons-webfont/dist/tabler-icons.min.css'
 import './assets/glass-theme.css'
 
 import router from './router'

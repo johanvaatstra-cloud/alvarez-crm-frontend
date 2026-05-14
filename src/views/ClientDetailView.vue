@@ -56,6 +56,10 @@
             <i class="pi pi-calendar-plus" />
             <span class="hdr-label">{{ t('clientDetail.planVisit') }}</span>
           </button>
+          <button v-if="isAdmin" class="hdr-btn hdr-btn-menu" @click="router.push(`/clients/${route.params.id}/menu`)">
+            <i class="ti ti-tools-kitchen-2" />
+            <span class="hdr-label">{{ t('menu.title') }}</span>
+          </button>
         </div>
       </header>
 
@@ -222,89 +226,6 @@
               <p v-else class="map-empty">{{ t('clientCard.noAddress') }}</p>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- ── Menukaart ─────────────────────────────────────────────────────── -->
-      <div class="glass-card menu-card">
-        <!-- Hidden file input (globally available in component) -->
-        <input ref="menuFileInput" type="file" accept="image/*,.pdf" style="display:none" @change="uploadMenu" />
-
-        <div class="card-hdr">
-          <span class="card-title">{{ t('menu.title') }}</span>
-          <span v-if="menu" class="menu-type-badge" :class="menu.sourceUrl ? 'menu-badge-url' : 'menu-badge-pdf'">
-            {{ menu.sourceUrl ? t('menu.typeUrl') : t('menu.typePdf') }}
-          </span>
-        </div>
-
-        <div class="menu-body">
-
-          <!-- Geen menukaart -->
-          <div v-if="!menu" class="card-empty">
-            <i class="pi pi-file-pdf" />
-            <p>{{ t('menu.noMenu') }}</p>
-          </div>
-
-          <!-- Menukaart beschikbaar -->
-          <template v-else>
-            <div class="menu-meta-row">
-              <div class="menu-meta-item">
-                <i class="pi pi-clock menu-meta-ico" />
-                <span class="menu-meta-lbl">{{ t('menu.lastUpdated') }}</span>
-                <span class="menu-meta-val">{{ formatShortDate(menu.fetchedAt) }}</span>
-              </div>
-              <div class="menu-meta-item">
-                <i class="pi pi-list menu-meta-ico" />
-                <span class="menu-meta-lbl">{{ t('menu.dishesRecognized') }}</span>
-                <span class="menu-meta-val menu-meta-accent">{{ menu.dishes.length }}</span>
-              </div>
-            </div>
-
-            <div v-if="menu.dishes.length > 0" class="menu-dishes-preview">
-              <span v-for="d in menu.dishes.slice(0, 10)" :key="d" class="dish-chip">{{ d }}</span>
-              <span v-if="menu.dishes.length > 10" class="dish-chip dish-chip-more">
-                +{{ menu.dishes.length - 10 }}
-              </span>
-            </div>
-          </template>
-
-          <!-- Succes-banner na upload/scrape -->
-          <div v-if="menuJustUpdated" class="menu-success-banner">
-            <div class="msb-left">
-              <i class="pi pi-check-circle" />
-              <span>{{ t('menu.uploadSuccess') }}</span>
-            </div>
-            <button
-              v-if="isAdmin"
-              class="btn-save msb-btn"
-              :disabled="generatingSuggestions"
-              @click="generateSuggestionsFromMenu"
-            >
-              <i :class="generatingSuggestions ? 'pi pi-spin pi-spinner' : 'pi pi-sparkles'" />
-              {{ t('menu.generateNow') }}
-            </button>
-          </div>
-
-          <!-- Admin-acties -->
-          <div v-if="isAdmin" class="menu-actions">
-            <div class="menu-url-row">
-              <InputText
-                v-model="menuUrl"
-                :placeholder="t('menu.urlPlaceholder')"
-                class="menu-url-inp"
-                :disabled="scraping || uploading"
-              />
-              <button class="btn-save" :disabled="scraping || uploading || !menuUrl.trim()" @click="scrapeMenu">
-                <i :class="scraping ? 'pi pi-spin pi-spinner' : 'pi pi-globe'" />
-                {{ t('menu.scrapeUrl') }}
-              </button>
-            </div>
-            <button class="btn-ghost menu-pdf-btn" :disabled="uploading || scraping" @click="menuFileInput.click()">
-              <i :class="uploading ? 'pi pi-spin pi-spinner' : 'pi pi-upload'" />
-              {{ t('menu.uploadPdf') }}
-            </button>
-          </div>
-
         </div>
       </div>
 
@@ -528,7 +449,6 @@ import api from '../api/axios'
 import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
 import VisitFormDialog from '../components/VisitFormDialog.vue'
 import ReportFormDialog from '../components/ReportFormDialog.vue'
 import { useAuthStore } from '../stores/auth'
@@ -710,13 +630,8 @@ async function assignSalesRep() {
 }
 
 // ── Menu & suggesties ─────────────────────────────────────────────────────────
-const menu             = ref(null)
-const menuUrl          = ref('')
-const scraping         = ref(false)
-const uploading        = ref(false)
-const menuFileInput    = ref(null)
-const menuJustUpdated  = ref(false)
-const suggestions      = ref([])
+const menu                  = ref(null)
+const suggestions           = ref([])
 const generatingSuggestions = ref(false)
 
 async function loadSuggestions() {
@@ -739,11 +654,6 @@ async function generateSuggestions() {
   }
 }
 
-async function generateSuggestionsFromMenu() {
-  menuJustUpdated.value = false
-  await generateSuggestions()
-}
-
 async function updateSuggestion(id, wasAccepted) {
   try {
     const { data } = await api.patch(`/clients/${route.params.id}/suggestions/${id}`, { wasAccepted })
@@ -758,42 +668,7 @@ async function loadMenu() {
   try {
     const { data } = await api.get(`/clients/${route.params.id}/menu`)
     menu.value = data.data
-    if (data.data?.sourceUrl) menuUrl.value = data.data.sourceUrl
   } catch { menu.value = null }
-}
-
-async function uploadMenu(e) {
-  const file = e.target.files[0]
-  if (!file) return
-  menuFileInput.value.value = ''
-  uploading.value = true
-  try {
-    const fd = new FormData()
-    fd.append('file', file)
-    const { data } = await api.post(`/clients/${route.params.id}/menu/upload`, fd, { headers: { 'Content-Type': 'multipart/form-data' } })
-    menu.value = data.data
-    menuJustUpdated.value = true
-    toast.add({ severity: 'success', summary: t('clientDetail.menuRead'), detail: `${data.data.dishes.length} ${t('clientDetail.dishesFoundToast')}`, life: 4000 })
-  } catch (e) {
-    toast.add({ severity: 'error', summary: t('clientDetail.uploadFailed'), detail: e.response?.data?.error ?? '', life: 4000 })
-  } finally {
-    uploading.value = false
-  }
-}
-
-async function scrapeMenu() {
-  if (!menuUrl.value.trim()) return
-  scraping.value = true
-  try {
-    const { data } = await api.post(`/clients/${route.params.id}/menu/scrape`, { url: menuUrl.value.trim() })
-    menu.value = data.data
-    menuJustUpdated.value = true
-    toast.add({ severity: 'success', summary: t('clientDetail.menuScraped'), detail: `${data.data.dishes.length} ${t('clientDetail.dishesFoundToast')}`, life: 4000 })
-  } catch (e) {
-    toast.add({ severity: 'error', summary: t('clientDetail.scrapeFailed'), detail: e.response?.data?.error ?? '', life: 4000 })
-  } finally {
-    scraping.value = false
-  }
 }
 
 // ── Hulpfuncties ──────────────────────────────────────────────────────────────
@@ -1090,6 +965,8 @@ onMounted(() => {
 .hdr-btn-primary:hover { background: rgba(74,222,128,0.22); }
 .hdr-btn-record        { background: rgba(167,139,250,0.15); border-color: rgba(167,139,250,0.35); color: #a78bfa; }
 .hdr-btn-record:hover  { background: rgba(167,139,250,0.25); }
+.hdr-btn-menu          { background: rgba(34,211,238,0.12); border-color: rgba(34,211,238,0.30); color: #22d3ee; }
+.hdr-btn-menu:hover    { background: rgba(34,211,238,0.20); }
 
 .hdr-label { font-size: 13px; }
 @media (max-width: 640px) { .hdr-label { display: none; } }
@@ -1445,71 +1322,6 @@ onMounted(() => {
   background: var(--btn); border: 1px solid var(--btn-border);
   color: var(--muted); border-radius: 10px;
 }
-
-/* ── Menukaart ───────────────────────────────────────────────────────────── */
-.menu-card { margin-bottom: 16px; }
-
-.menu-type-badge {
-  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
-  padding: 2px 9px; border-radius: 10px;
-}
-.menu-badge-url { background: rgba(96,165,250,0.18); color: #60a5fa; }
-.menu-badge-pdf { background: rgba(251,191,36,0.18);  color: #fbbf24; }
-
-.menu-body { padding: 0 0 4px; }
-
-.menu-meta-row {
-  display: flex; gap: 0; flex-wrap: wrap;
-  border-bottom: 1px solid var(--divider);
-}
-.menu-meta-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 11px 18px;
-  flex: 1; min-width: 180px;
-  border-right: 1px solid var(--divider);
-}
-.menu-meta-item:last-child { border-right: none; }
-.menu-meta-ico  { font-size: 13px; color: var(--muted); flex-shrink: 0; }
-.menu-meta-lbl  { font-size: 12px; color: var(--muted); }
-.menu-meta-val  { font-size: 13px; font-weight: 600; color: var(--text); margin-left: auto; }
-.menu-meta-accent { color: var(--accent) !important; }
-
-.menu-dishes-preview {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--divider);
-}
-.dish-chip-more {
-  background: var(--accent-dim) !important;
-  border-color: var(--accent) !important;
-  color: var(--accent) !important;
-}
-
-.menu-success-banner {
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-  padding: 12px 18px;
-  background: rgba(74,222,128,0.10);
-  border-bottom: 1px solid rgba(74,222,128,0.25);
-  color: var(--accent);
-  font-size: 13px; font-weight: 600;
-}
-.theme-light .menu-success-banner {
-  background: rgba(45,106,79,0.08);
-  border-bottom-color: rgba(45,106,79,0.20);
-}
-.msb-left { display: flex; align-items: center; gap: 8px; }
-.msb-left i { font-size: 16px; }
-.msb-btn { padding: 6px 14px; font-size: 12px; }
-
-.menu-actions {
-  display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap;
-  padding: 14px 18px;
-}
-.menu-url-row {
-  display: flex; gap: 8px; flex: 1; min-width: 220px; flex-wrap: wrap; align-items: center;
-}
-.menu-url-inp { flex: 1; min-width: 160px; }
-.menu-pdf-btn { align-self: flex-end; white-space: nowrap; }
 
 /* ── PrimeVue overrides voor dark/light thema ─────────────────────────────── */
 .theme-dark :deep(.p-select),
