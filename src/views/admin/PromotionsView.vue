@@ -1,28 +1,43 @@
 <template>
-  <div class="page">
+  <div class="page" :class="isDark ? 'theme-dark' : 'theme-light'">
+
+    <!-- Blob achtergronden -->
+    <div class="blobs" aria-hidden="true">
+      <div class="blob blob-1" />
+      <div class="blob blob-2" />
+      <div class="blob blob-3" />
+      <div class="blob blob-4" />
+    </div>
+
     <div class="page-header">
       <div>
         <h1>{{ t('promotions.title') }}</h1>
         <p class="subtitle">{{ t('promotions.subtitle') }}</p>
       </div>
-      <Button :label="t('promotions.newPromotion')" icon="pi pi-plus" @click="openCreate" />
+      <button class="btn-new" @click="openCreate">
+        <i class="pi pi-plus" />
+        {{ t('promotions.newPromotion') }}
+      </button>
     </div>
 
-    <!-- List -->
-    <div v-if="loading" class="loading-state">
-      <i class="pi pi-spin pi-spinner" /> {{ t('common.loading') }}
+    <!-- Laden -->
+    <div v-if="loading" class="glass-card empty-card">
+      <i class="pi pi-spin pi-spinner" />
+      <p>{{ t('common.loading') }}</p>
     </div>
 
-    <div v-else-if="promotions.length === 0" class="empty-state">
+    <!-- Leeg -->
+    <div v-else-if="promotions.length === 0" class="glass-card empty-card">
       <i class="pi pi-tag" />
       <p>{{ t('promotions.noPromotions') }}</p>
     </div>
 
+    <!-- Promotie kaarten -->
     <div v-else class="promo-list">
       <div
         v-for="p in promotions"
         :key="p.id"
-        class="promo-card"
+        class="glass-card promo-card"
         :class="{ active: p.isActive, expired: !p.isActive && isExpired(p.endDate), upcoming: !p.isActive && isUpcoming(p.startDate) }"
       >
         <div class="promo-status-bar" />
@@ -30,15 +45,17 @@
           <div class="promo-top">
             <div class="promo-info">
               <span class="promo-product">{{ p.productName ?? p.productId }}</span>
-              <Tag
-                :value="p.isActive ? t('promotions.statusActive') : isExpired(p.endDate) ? t('promotions.statusExpired') : t('promotions.statusPlanned')"
-                :severity="p.isActive ? 'success' : isExpired(p.endDate) ? 'secondary' : 'info'"
-                class="promo-tag"
-              />
+              <span :class="['status-badge', promoStatusClass(p)]">
+                {{ p.isActive ? t('promotions.statusActive') : isExpired(p.endDate) ? t('promotions.statusExpired') : t('promotions.statusPlanned') }}
+              </span>
             </div>
             <div class="promo-actions">
-              <Button icon="pi pi-pencil" text size="small" @click="openEdit(p)" v-tooltip="t('common.edit')" />
-              <Button icon="pi pi-trash" text size="small" severity="danger" @click="confirmDelete(p)" v-tooltip="t('common.delete')" />
+              <button class="icon-btn" @click="openEdit(p)" :title="t('common.edit')">
+                <i class="pi pi-pencil" />
+              </button>
+              <button class="icon-btn icon-btn-danger" @click="confirmDelete(p)" :title="t('common.delete')">
+                <i class="pi pi-trash" />
+              </button>
             </div>
           </div>
           <p class="promo-text">{{ p.promotionText }}</p>
@@ -50,7 +67,7 @@
       </div>
     </div>
 
-    <!-- Create / Edit dialog -->
+    <!-- Aanmaken / Bewerken dialoog -->
     <Dialog
       v-model:visible="showForm"
       :header="editId ? t('promotions.editTitle') : t('promotions.newTitle')"
@@ -118,7 +135,7 @@
       </template>
     </Dialog>
 
-    <!-- Delete confirm -->
+    <!-- Verwijder bevestiging -->
     <Dialog v-model:visible="showDeleteConfirm" :header="t('promotions.deleteTitle')" :style="{ width: '380px' }" modal>
       <p style="margin: 0; font-size: 14px;">
         {{ t('promotions.deleteConfirm') }} <strong>{{ deleteTarget?.productName }}</strong> {{ t('promotions.deleteConfirmEnd') }}
@@ -135,11 +152,11 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useI18n } from 'vue-i18n'
+import { useTheme } from '../../composables/useTheme.js'
 import { format, parseISO } from 'date-fns'
 import { nl, enGB, es, ca } from 'date-fns/locale'
 import api from '../../api/axios'
 import Button from 'primevue/button'
-import Tag from 'primevue/tag'
 import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
@@ -147,6 +164,7 @@ import DatePicker from 'primevue/datepicker'
 
 const { t, locale } = useI18n()
 const toast = useToast()
+const { isDark } = useTheme()
 
 const DFNS_LOCALES = { nl, en: enGB, es, ca }
 const dateFnsLocale = computed(() => DFNS_LOCALES[locale.value] ?? nl)
@@ -176,6 +194,12 @@ const isValid = computed(() =>
 function formatDate(d) { return format(parseISO(d), 'd MMM yyyy', { locale: dateFnsLocale.value }) }
 function isExpired(d) { return new Date(d) < new Date() }
 function isUpcoming(d) { return new Date(d) > new Date() }
+
+function promoStatusClass(p) {
+  if (p.isActive) return 'badge-active'
+  if (isExpired(p.endDate)) return 'badge-expired'
+  return 'badge-planned'
+}
 
 async function load() {
   loading.value = true
@@ -273,10 +297,54 @@ onMounted(() => { load(); loadProducts() })
 </script>
 
 <style scoped>
-.page {
-  padding: 32px;
-  max-width: 1000px;
+/* ── Thema variabelen ─────────────────────────────────────────────────────── */
+.theme-dark {
+  --bg:         #0f1923;
+  --card:       rgba(255,255,255,0.07);
+  --card-top:   rgba(255,255,255,0.22);
+  --card-left:  rgba(255,255,255,0.10);
+  --border:     rgba(255,255,255,0.06);
+  --text:       rgba(255,255,255,0.92);
+  --muted:      rgba(255,255,255,0.45);
+  --accent:     #4ade80;
+  --accent-dim: rgba(74,222,128,0.15);
+  --btn:        rgba(255,255,255,0.10);
+  --btn-hover:  rgba(255,255,255,0.17);
+  --shadow:     0 8px 32px rgba(0,0,0,0.45);
+  background:   #0f1923;
+  color:        rgba(255,255,255,0.92);
 }
+
+.theme-light {
+  --bg:         transparent;
+  --card:       rgba(255,255,255,0.68);
+  --card-top:   rgba(255,255,255,0.97);
+  --card-left:  rgba(255,255,255,0.85);
+  --border:     rgba(0,0,0,0.05);
+  --text:       #1a2e1a;
+  --muted:      #6c757d;
+  --accent:     #2d6a4f;
+  --accent-dim: rgba(45,106,79,0.10);
+  --btn:        rgba(45,106,79,0.08);
+  --btn-hover:  rgba(45,106,79,0.14);
+  --shadow:     0 2px 16px rgba(0,0,0,0.07);
+  background:   linear-gradient(135deg, #e8f5ee 0%, #f0f4ff 100%);
+  background-attachment: fixed;
+  color:        #1a2e1a;
+}
+
+/* ── Blobs ───────────────────────────────────────────────────────────────── */
+.blobs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.blob  { position: absolute; border-radius: 50%; filter: blur(72px); opacity: 0; transition: opacity .4s; }
+.theme-dark .blob { opacity: 1; }
+.blob-1 { width: 600px; height: 600px; top: -120px; right: -80px;  background: radial-gradient(circle, rgba(74,222,128,0.28) 0%, transparent 68%); }
+.blob-2 { width: 520px; height: 520px; bottom: 10%; left: -120px;  background: radial-gradient(circle, rgba(96,165,250,0.22) 0%, transparent 68%); }
+.blob-3 { width: 420px; height: 420px; top: 42%;    right: 28%;    background: radial-gradient(circle, rgba(167,139,250,0.20) 0%, transparent 68%); }
+.blob-4 { width: 360px; height: 360px; bottom: 8%;  right: 8%;     background: radial-gradient(circle, rgba(34,211,238,0.16) 0%, transparent 68%); }
+.page > *:not(.blobs) { position: relative; z-index: 1; }
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+.page { padding: 32px; max-width: 1000px; min-height: 100vh; }
 
 .page-header {
   display: flex;
@@ -285,65 +353,69 @@ onMounted(() => { load(); loadProducts() })
   margin-bottom: 28px;
 }
 
-.page-header h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1b4332;
-  margin: 0 0 4px;
+.page-header h1 { font-size: 24px; font-weight: 700; color: var(--text); margin: 0 0 4px; }
+.subtitle { color: var(--muted); margin: 0; font-size: 14px; }
+
+/* ── Nieuwe-promotie knop ─────────────────────────────────────────────────── */
+.btn-new {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .15s;
+  flex-shrink: 0;
+}
+.btn-new:hover { background: rgba(74,222,128,0.22); }
+
+/* ── Glass kaart ─────────────────────────────────────────────────────────── */
+.glass-card {
+  background: var(--card);
+  border-radius: 14px;
+  border-top: 1px solid var(--card-top);
+  border-left: 1px solid var(--card-left);
+  border-right: none;
+  border-bottom: none;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow);
 }
 
-.subtitle {
-  color: #6c757d;
-  margin: 0;
-  font-size: 14px;
-}
-
-.loading-state, .empty-state {
-  background: white;
-  border-radius: 12px;
+/* ── Leeg / laden staat ──────────────────────────────────────────────────── */
+.empty-card {
   padding: 64px;
   text-align: center;
-  color: #adb5bd;
-  box-shadow: 0 1px 3px rgba(0,0,0,.07);
+  color: var(--muted);
 }
+.empty-card i { font-size: 40px; display: block; margin-bottom: 12px; }
+.empty-card p { margin: 0; font-size: 14px; }
 
-.empty-state i, .loading-state i {
-  font-size: 40px;
-  display: block;
-  margin-bottom: 12px;
-}
-
-.empty-state p { margin: 0; font-size: 14px; }
-
-/* ── Promo cards ──────────────────────────────────────────────────────────── */
-.promo-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+/* ── Promotie kaarten ────────────────────────────────────────────────────── */
+.promo-list { display: flex; flex-direction: column; gap: 12px; }
 
 .promo-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.07);
   display: flex;
   overflow: hidden;
+  padding: 0;
 }
 
 .promo-status-bar {
   width: 4px;
-  background: #dee2e6;
+  background: var(--border);
   flex-shrink: 0;
 }
 
-.promo-card.active .promo-status-bar { background: #40c057; }
-.promo-card.expired .promo-status-bar { background: #dee2e6; }
-.promo-card.upcoming .promo-status-bar { background: #339af0; }
+.promo-card.active   .promo-status-bar { background: #4ade80; }
+.promo-card.expired  .promo-status-bar { background: rgba(156,163,175,0.4); }
+.promo-card.upcoming .promo-status-bar { background: #60a5fa; }
 
-.promo-body {
-  padding: 16px 20px;
-  flex: 1;
-}
+.promo-body { padding: 16px 20px; flex: 1; }
 
 .promo-top {
   display: flex;
@@ -353,32 +425,44 @@ onMounted(() => { load(); loadProducts() })
   gap: 12px;
 }
 
-.promo-info {
-  display: flex;
+.promo-info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.promo-product { font-size: 15px; font-weight: 600; color: var(--text); }
+
+/* ── Status badges ───────────────────────────────────────────────────────── */
+.status-badge {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.promo-product {
-  font-size: 15px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
   font-weight: 600;
-  color: #212529;
+  letter-spacing: 0.3px;
+  border: 1px solid transparent;
 }
+.badge-active  { background: rgba(74,222,128,0.18);  color: var(--accent); border-color: rgba(74,222,128,0.3); }
+.badge-expired { background: rgba(156,163,175,0.15); color: var(--muted);  border-color: rgba(156,163,175,0.25); }
+.badge-planned { background: rgba(96,165,250,0.18);  color: #60a5fa;       border-color: rgba(96,165,250,0.3); }
 
-.promo-tag {
-  font-size: 11px !important;
-}
+.promo-actions { display: flex; gap: 2px; flex-shrink: 0; }
 
-.promo-actions {
-  display: flex;
-  gap: 2px;
-  flex-shrink: 0;
+.icon-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--btn);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  transition: background .15s, color .15s;
 }
+.icon-btn:hover { background: var(--btn-hover); color: var(--text); }
+.icon-btn-danger:hover { background: rgba(248,113,113,0.15); color: #f87171; border-color: rgba(248,113,113,0.3); }
 
 .promo-text {
   font-size: 14px;
-  color: #495057;
+  color: var(--muted);
   margin: 0 0 10px;
   line-height: 1.5;
 }
@@ -388,39 +472,24 @@ onMounted(() => { load(); loadProducts() })
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #868e96;
+  color: var(--muted);
+  opacity: 0.75;
 }
-
 .promo-dates .pi { font-size: 11px; }
 
-/* ── Form ─────────────────────────────────────────────────────────────────── */
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 8px 0;
-}
+/* ── Formulier ───────────────────────────────────────────────────────────── */
+.form { display: flex; flex-direction: column; gap: 16px; padding: 8px 0; }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+.field { display: flex; flex-direction: column; gap: 6px; }
 
-.field label {
-  font-size: 13px;
-  font-weight: 500;
-  color: #495057;
-}
+.field label { font-size: 13px; font-weight: 500; color: #495057; }
 
 .req { color: #e03131; }
 .w-full { width: 100%; }
 
 .field :deep(.p-select),
 .field :deep(.p-datepicker),
-.field :deep(.p-textarea) {
-  width: 100%;
-}
+.field :deep(.p-textarea) { width: 100%; }
 
 .field-row {
   display: grid;

@@ -1,34 +1,42 @@
 <template>
-  <div class="page">
+  <div class="page" :class="isDark ? 'theme-dark' : 'theme-light'">
+
+    <!-- Blob achtergronden -->
+    <div class="blobs" aria-hidden="true">
+      <div class="blob blob-1" />
+      <div class="blob blob-2" />
+      <div class="blob blob-3" />
+      <div class="blob blob-4" />
+    </div>
+
     <div class="page-header">
       <div>
         <h1>{{ t('users.title') }}</h1>
         <p class="subtitle">{{ t('users.subtitle') }}</p>
       </div>
-      <Button :label="t('users.addEmployee')" icon="pi pi-plus" @click="openCreateDialog" />
+      <Button :label="t('users.addEmployee')" icon="pi pi-plus" @click="openCreateDialog" class="btn-accent" />
     </div>
 
-    <div class="card">
+    <div class="glass-card table-wrap">
       <DataTable :value="users" :loading="loading">
         <Column field="fullName" :header="t('common.name')" />
         <Column field="email" :header="t('common.email')" />
         <Column field="isActive" :header="t('common.status')">
           <template #body="{ data }">
-            <Tag
-              :value="data.isActive ? t('common.active') : t('common.inactive')"
-              :severity="data.isActive ? 'success' : 'secondary'"
-            />
+            <span :class="['status-badge', data.isActive ? 'badge-active' : 'badge-inactive']">
+              {{ data.isActive ? t('common.active') : t('common.inactive') }}
+            </span>
           </template>
         </Column>
-        <Column :header="t('common.actions')" style="width: 120px">
+        <Column :header="t('common.actions')" style="width: 140px">
           <template #body="{ data }">
-            <Button
+            <button
               v-if="data.isActive"
-              :label="t('users.deactivate')"
-              severity="secondary"
-              size="small"
+              class="btn-deactivate"
               @click="deactivate(data)"
-            />
+            >
+              {{ t('users.deactivate') }}
+            </button>
           </template>
         </Column>
         <template #empty>
@@ -75,11 +83,11 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useI18n } from 'vue-i18n'
+import { useTheme } from '../../composables/useTheme.js'
 import api from '../../api/axios'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
-import Tag from 'primevue/tag'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
@@ -87,6 +95,8 @@ import Message from 'primevue/message'
 
 const { t } = useI18n()
 const toast = useToast()
+const { isDark } = useTheme()
+
 const users = ref([])
 const loading = ref(false)
 const showDialog = ref(false)
@@ -153,9 +163,61 @@ onMounted(load)
 </script>
 
 <style scoped>
+/* ── Thema variabelen ─────────────────────────────────────────────────────── */
+.theme-dark {
+  --bg:         #0f1923;
+  --card:       rgba(255,255,255,0.07);
+  --card-top:   rgba(255,255,255,0.22);
+  --card-left:  rgba(255,255,255,0.10);
+  --border:     rgba(255,255,255,0.06);
+  --text:       rgba(255,255,255,0.92);
+  --muted:      rgba(255,255,255,0.45);
+  --accent:     #4ade80;
+  --accent-dim: rgba(74,222,128,0.15);
+  --th-bg:      rgba(255,255,255,0.04);
+  --row-hover:  rgba(255,255,255,0.05);
+  --btn:        rgba(255,255,255,0.10);
+  --btn-hover:  rgba(255,255,255,0.17);
+  --shadow:     0 8px 32px rgba(0,0,0,0.45);
+  background:   #0f1923;
+  color:        rgba(255,255,255,0.92);
+}
+
+.theme-light {
+  --bg:         transparent;
+  --card:       rgba(255,255,255,0.68);
+  --card-top:   rgba(255,255,255,0.97);
+  --card-left:  rgba(255,255,255,0.85);
+  --border:     rgba(0,0,0,0.05);
+  --text:       #1a2e1a;
+  --muted:      #6c757d;
+  --accent:     #2d6a4f;
+  --accent-dim: rgba(45,106,79,0.10);
+  --th-bg:      rgba(248,250,248,0.90);
+  --row-hover:  rgba(45,106,79,0.04);
+  --btn:        rgba(45,106,79,0.08);
+  --btn-hover:  rgba(45,106,79,0.14);
+  --shadow:     0 2px 16px rgba(0,0,0,0.07);
+  background:   linear-gradient(135deg, #e8f5ee 0%, #f0f4ff 100%);
+  background-attachment: fixed;
+  color:        #1a2e1a;
+}
+
+/* ── Blobs ───────────────────────────────────────────────────────────────── */
+.blobs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.blob  { position: absolute; border-radius: 50%; filter: blur(72px); opacity: 0; transition: opacity .4s; }
+.theme-dark .blob { opacity: 1; }
+.blob-1 { width: 600px; height: 600px; top: -120px; right: -80px;  background: radial-gradient(circle, rgba(74,222,128,0.28) 0%, transparent 68%); }
+.blob-2 { width: 520px; height: 520px; bottom: 10%; left: -120px;  background: radial-gradient(circle, rgba(96,165,250,0.22) 0%, transparent 68%); }
+.blob-3 { width: 420px; height: 420px; top: 42%;    right: 28%;    background: radial-gradient(circle, rgba(167,139,250,0.20) 0%, transparent 68%); }
+.blob-4 { width: 360px; height: 360px; bottom: 8%;  right: 8%;     background: radial-gradient(circle, rgba(34,211,238,0.16) 0%, transparent 68%); }
+.page > *:not(.blobs) { position: relative; z-index: 1; }
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
 .page {
   padding: 32px;
   max-width: 1000px;
+  min-height: 100vh;
 }
 
 .page-header {
@@ -168,54 +230,111 @@ onMounted(load)
 .page-header h1 {
   font-size: 24px;
   font-weight: 700;
-  color: #1b4332;
+  color: var(--text);
   margin: 0 0 4px;
 }
 
 .subtitle {
-  color: #6c757d;
+  color: var(--muted);
   font-size: 14px;
   margin: 0;
 }
 
-.page-header :deep(.p-button) {
-  background: var(--green-primary) !important;
-  border-color: var(--green-primary) !important;
+/* ── Knop ────────────────────────────────────────────────────────────────── */
+.btn-accent :deep(.p-button) {
+  background: var(--accent-dim) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
 }
 
-.card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+/* ── Tabel kaart ─────────────────────────────────────────────────────────── */
+.table-wrap {
+  padding: 0;
   overflow: hidden;
 }
 
-.card :deep(.p-datatable-thead > tr > th) {
-  background: #f8f9fa;
-  color: #6c757d;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-color: #e9ecef;
+.glass-card {
+  background: var(--card);
+  border-radius: 14px;
+  border-top: 1px solid var(--card-top);
+  border-left: 1px solid var(--card-left);
+  border-right: none;
+  border-bottom: none;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow);
 }
 
+.table-wrap :deep(.p-datatable-thead > tr > th) {
+  background: var(--th-bg);
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-color: var(--border);
+}
+
+.table-wrap :deep(.p-datatable-tbody > tr > td) {
+  color: var(--text);
+  border-color: var(--border);
+  font-size: 13px;
+}
+
+.table-wrap :deep(.p-datatable-tbody > tr:hover > td) {
+  background: var(--row-hover) !important;
+}
+
+.table-wrap :deep(.p-datatable) {
+  background: transparent;
+}
+
+.table-wrap :deep(.p-datatable-wrapper) {
+  background: transparent;
+}
+
+/* ── Status badges ───────────────────────────────────────────────────────── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border: 1px solid transparent;
+}
+
+.badge-active   { background: rgba(74,222,128,0.18);  color: var(--accent); border-color: rgba(74,222,128,0.3); }
+.badge-inactive { background: rgba(156,163,175,0.15); color: var(--muted);  border-color: rgba(156,163,175,0.25); }
+
+/* ── Deactiveer knop ─────────────────────────────────────────────────────── */
+.btn-deactivate {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--btn);
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+
+.btn-deactivate:hover {
+  background: var(--btn-hover);
+  color: var(--text);
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
 .empty-state {
   text-align: center;
   padding: 48px;
-  color: #adb5bd;
+  color: var(--muted);
 }
 
-.empty-state i {
-  font-size: 32px;
-  display: block;
-  margin-bottom: 8px;
-}
+.empty-state i { font-size: 32px; display: block; margin-bottom: 8px; }
+.empty-state p { margin: 0; font-size: 14px; }
 
-.empty-state p {
-  margin: 0;
-  font-size: 14px;
-}
-
+/* ── Dialog formulier ────────────────────────────────────────────────────── */
 .dialog-form {
   display: flex;
   flex-direction: column;
@@ -236,11 +355,6 @@ onMounted(load)
 }
 
 .field :deep(.p-inputtext),
-.field :deep(.p-password-input) {
-  width: 100%;
-}
-
-.field :deep(.p-password) {
-  width: 100%;
-}
+.field :deep(.p-password-input) { width: 100%; }
+.field :deep(.p-password) { width: 100%; }
 </style>
