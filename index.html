@@ -20,21 +20,23 @@
 
     <!-- Theme colour (Android Chrome toolbar) -->
     <meta name="theme-color" content="#2d6a4f" />
-
-    <!-- Verwijder eventuele oude service workers en caches volledig -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(registrations => {
-          registrations.forEach(r => r.unregister())
-        })
-        caches.keys().then(keys => {
-          keys.forEach(key => caches.delete(key))
-        })
-      }
-    </script>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
+
+    <!-- Verwijder eventuele oude service workers en caches volledig -->
+    <script>
+      try {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(r => r.unregister())
+          })
+          caches.keys().then(keys => {
+            keys.forEach(key => caches.delete(key))
+          })
+        }
+      } catch (e) {}
+    </script>
   </body>
 </html>
